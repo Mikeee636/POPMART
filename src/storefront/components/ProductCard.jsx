@@ -30,19 +30,20 @@ export function HeartButton({ id, kind = 'float' }) {
 
 function CartCounter({ product }) {
   const { cart, setQty, addToCart } = useShop()
-  const qty = cart[product.cart] || 0
+  const cartKey = product.cart || product.id
+  const qty = cart[cartKey] || 0
   if (qty === 0) {
     return (
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation()
-          addToCart(product.cart)
+          addToCart(cartKey)
         }}
-        className="t-label h-9 w-full rounded-lg border-[1.5px] border-ink text-ink inline-flex items-center justify-center gap-1.5 active:opacity-70"
+        className="t-label h-9 w-full rounded-lg border-[1.5px] border-ink text-ink inline-flex items-center justify-center gap-1.5 active:opacity-70 hover:bg-neutral-50 transition-colors cursor-pointer"
       >
         <Icon name="plus" size={14} />
-        Tambah ke tas
+        Masukan ke keranjang
       </button>
     )
   }
@@ -51,11 +52,11 @@ function CartCounter({ product }) {
       onClick={(e) => e.stopPropagation()}
       className="h-9 w-full rounded-lg bg-ink text-white inline-flex items-center justify-between"
     >
-      <button type="button" aria-label="Kurang" className="w-9 h-9 inline-flex items-center justify-center" onClick={() => setQty(product.cart, qty - 1)}>
+      <button type="button" aria-label="Kurang" className="w-9 h-9 inline-flex items-center justify-center cursor-pointer hover:opacity-80" onClick={() => setQty(cartKey, qty - 1)}>
         <Icon name="minus" size={16} color="#fff" />
       </button>
-      <span className="t-caption">{qty} di tas</span>
-      <button type="button" aria-label="Tambah" className="w-9 h-9 inline-flex items-center justify-center" onClick={() => setQty(product.cart, qty + 1)}>
+      <span className="t-caption font-semibold">{qty} di keranjang</span>
+      <button type="button" aria-label="Tambah" className="w-9 h-9 inline-flex items-center justify-center cursor-pointer hover:opacity-80" onClick={() => setQty(cartKey, qty + 1)}>
         <Icon name="plus" size={16} color="#fff" />
       </button>
     </div>

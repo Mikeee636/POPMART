@@ -23,8 +23,8 @@ export function ShopProvider({ children }) {
   const nav = useMemo(
     () => ({
       go: (name, params) => setStack((s) => [...s, { name, params }]),
-      back: () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : s)),
-      tab: (name) => setStack([{ name }]), // bottom tabs reset the stack
+      back: () => setStack((s) => (s.length > 1 ? s.slice(0, -1) : [{ name: 'home' }])),
+      tab: (name, params) => setStack([{ name, params }]), // bottom tabs reset the stack
       swap: (name, params) => setStack((s) => [...s.slice(0, -1), { name, params }]),
     }),
     [],

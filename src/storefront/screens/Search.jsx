@@ -13,7 +13,14 @@ export default function Search() {
   const [history, setHistory] = useState(SEARCH_HISTORY)
 
   const q = query.trim().toLowerCase()
-  const results = q ? Object.values(PRODUCTS).filter((p) => p.name.toLowerCase().includes(q)) : []
+  const results = q ? Object.values(PRODUCTS).filter((p) => p.name.toLowerCase().includes(q) || p.ip.toLowerCase().includes(q)) : []
+
+  const handleSelectQuery = (val) => {
+    setQuery(val)
+    if (val && !history.includes(val.toLowerCase())) {
+      setHistory((prev) => [val.toLowerCase(), ...prev.filter((h) => h !== val.toLowerCase()).slice(0, 5)])
+    }
+  }
 
   const header = (
     <header className="lg:hidden shrink-0 bg-white border-b border-line z-10 pt-[env(safe-area-inset-top,0px)]">
@@ -24,12 +31,13 @@ export default function Search() {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSelectQuery(query)}
             placeholder="Cari produk…"
             className="t-body flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted"
           />
           {query && <IconBtn name="close" size={28} iconSize={16} color="#6B6B6B" label="Hapus" onClick={() => setQuery('')} />}
         </label>
-        <button type="button" onClick={nav.back} className="t-strong h-11 px-2">Batal</button>
+        <button type="button" onClick={nav.back} className="t-strong h-11 px-2 cursor-pointer">Batal</button>
       </div>
     </header>
   )
@@ -40,14 +48,20 @@ export default function Search() {
         <div className="hidden lg:flex px-4">
           <label className="flex-1 flex items-center gap-2.5 h-12 px-4 rounded-[10px] bg-surface">
             <Icon name="search" size={20} />
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari produk…" className="t-body flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSelectQuery(query)}
+              placeholder="Cari produk…"
+              className="t-body flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted"
+            />
           </label>
         </div>
         <section className="px-4 flex flex-col gap-3">
           <h2 className="t-heading">Pencarian Populer</h2>
           <div className="flex flex-wrap gap-2">
             {SEARCH_POPULAR.map((c) => (
-              <Chip key={c} onClick={() => setQuery(c)}>{c}</Chip>
+              <Chip key={c} onClick={() => handleSelectQuery(c)}>{c}</Chip>
             ))}
           </div>
         </section>
@@ -56,10 +70,10 @@ export default function Search() {
           <section className="px-4 flex flex-col gap-1">
             <div className="flex items-center justify-between h-8">
               <h2 className="t-heading">Riwayat Pencarian</h2>
-              <button type="button" onClick={() => setHistory([])} className="t-caption text-ink2 underline">Hapus</button>
+              <button type="button" onClick={() => setHistory([])} className="t-caption text-ink2 underline cursor-pointer">Hapus</button>
             </div>
             {history.map((term) => (
-              <button key={term} type="button" onClick={() => setQuery(term)} className="flex items-center gap-3 h-11 text-left">
+              <button key={term} type="button" onClick={() => handleSelectQuery(term)} className="flex items-center gap-3 h-11 text-left cursor-pointer hover:opacity-80">
                 <Icon name="clock" size={18} color="#6B6B6B" />
                 <span className="t-body text-ink2 flex-1">{term}</span>
                 <Icon name="chevRight" size={16} color="#6B6B6B" />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
@@ -62,8 +63,18 @@ const DashboardContent = () => {
       >
         <Header onToggleSidebar={() => setIsSidebarOpen(prev => !prev)} />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          {renderActiveView()}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {renderActiveView()}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
 
@@ -136,9 +147,7 @@ class ErrorBoundary extends React.Component {
 export default function App() {
   return (
     <ErrorBoundary>
-      <StoreProvider>
-        <DashboardContent />
-      </StoreProvider>
+      <DashboardContent />
     </ErrorBoundary>
   );
 }

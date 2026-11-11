@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useShop } from '../context/ShopContext'
 import { ActionBar, BackHeader, Screen } from '../components/Layout'
+import Icon from '../components/Icon'
 import ProductCard, { HeartButton } from '../components/ProductCard'
 import { Badge, Button, Divider, HScroll, InfoRow, SectionHead, Stepper, SummaryRow, Thumb, cx } from '../components/ui'
 import { IP, MAX_QTY, PRODUCTS } from '../data/catalog'
@@ -8,8 +9,8 @@ import { rp } from '../utils/format'
 
 export default function Detail({ params }) {
   const { nav, addToCart, notify } = useShop()
-  const product = PRODUCTS[params?.id] || PRODUCTS.hironoShelter
-  const ip = IP[product.ip]
+  const product = PRODUCTS[params?.id] || PRODUCTS.hrn_2 || Object.values(PRODUCTS)[0]
+  const ip = IP[product.ip] || Object.values(IP)[0]
   const isBox = product.variant !== 'Figurine'
 
   const variants = isBox
@@ -22,20 +23,37 @@ export default function Detail({ params }) {
   const [variant, setVariant] = useState(0)
   const [qty, setQty] = useState(1)
 
-  const onAdd = () => {
-    if (!product.cart) {
-      notify('Demo: hanya produk Hirono yang bisa dibeli')
-      return
-    }
-    for (let i = 0; i < qty; i++) addToCart(product.cart)
-    nav.go('cart')
+  const handleAddToCart = () => {
+    const cartKey = product.cart || product.id
+    for (let i = 0; i < qty; i++) addToCart(cartKey)
+    notify(`${qty}x "${product.name}" berhasil dimasukkan ke keranjang!`)
+  }
+
+  const handleCheckout = () => {
+    const cartKey = product.cart || product.id
+    for (let i = 0; i < qty; i++) addToCart(cartKey)
+    nav.go('checkout')
   }
 
   const bottom = (
-    <ActionBar>
-      {product.cart && <HeartButton id={product.cart} kind="framed" />}
-      <Button className="flex-1" onClick={onAdd}>TAMBAH KE TAS</Button>
-    </ActionBar>
+    <div className="lg:hidden">
+      <ActionBar>
+        <HeartButton id={product.cart || product.id} kind="framed" />
+        <Button
+          kind="secondary"
+          className="flex-1 text-xs sm:text-sm font-bold border-[1.5px] border-black text-black"
+          onClick={handleAddToCart}
+        >
+          + KERANJANG
+        </Button>
+        <Button
+          className="flex-1 text-xs sm:text-sm font-bold bg-black text-white hover:bg-neutral-900 border-none"
+          onClick={handleCheckout}
+        >
+          CHECKOUT
+        </Button>
+      </ActionBar>
+    </div>
   )
 
   return (
@@ -87,6 +105,25 @@ export default function Detail({ params }) {
             <h3 className="t-heading">Jumlah</h3>
             <Stepper qty={qty} size={40} onMinus={() => setQty((q) => Math.max(1, q - 1))} onPlus={() => setQty((q) => Math.min(MAX_QTY, q + 1))} />
           </div>
+
+          {/* Action Buttons: Checkout & Masukan ke Keranjang (Desktop Web View) */}
+          <div className="hidden lg:flex items-center gap-3 pt-3">
+            <HeartButton id={product.cart || product.id} kind="framed" />
+            <Button
+              kind="secondary"
+              onClick={handleAddToCart}
+              className="flex-1 h-12 border-[1.5px] border-black text-black hover:bg-neutral-50 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+            >
+              <Icon name="bag" size={18} />
+              MASUKAN KE KERANJANG
+            </Button>
+            <Button
+              onClick={handleCheckout}
+              className="flex-1 h-12 bg-black text-white hover:bg-neutral-900 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all border-none"
+            >
+              CHECKOUT SEKARANG
+            </Button>
+          </div>
         </section>
 
         {/* Layanan */}
@@ -122,9 +159,9 @@ export default function Detail({ params }) {
             <SectionHead title="Kamu mungkin suka" />
           </div>
           <HScroll>
-            {['hironoShelter', 'hironoPrince', 'skullpanda', 'dimoo', 'crybaby']
+            {Object.keys(PRODUCTS)
               .filter((k) => k !== product.id)
-              .slice(0, 4)
+              .slice(0, 6)
               .map((k) => (
                 <ProductCard key={k} product={PRODUCTS[k]} className="w-[171px] shrink-0" onOpen={() => nav.swap('detail', { id: k })} />
               ))}

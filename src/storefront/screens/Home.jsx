@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useShop } from '../context/ShopContext'
 import { BottomNav, LogoHeader, Screen } from '../components/Layout'
 import Icon from '../components/Icon'
@@ -8,8 +9,19 @@ import { CATEGORIES, IP, IP_STRIP, MEGA_ITEMS, POPULAR_KEYS, PRODUCTS } from '..
 const PAYMENTS = ['Visa', 'Mastercard', 'Amex', 'JCB', 'PayPal', 'Apple Pay', 'Google Pay']
 
 export default function Home() {
-  const { nav } = useShop()
-  const hero = PRODUCTS.hironoShelter
+  const { nav, notify } = useShop()
+  const hero = PRODUCTS.hrn_2 || Object.values(PRODUCTS)[0]
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+
+  const handleSubscribe = (e) => {
+    e?.preventDefault()
+    if (!newsletterEmail.trim()) {
+      notify('Harap masukkan alamat email')
+      return
+    }
+    notify('Terima kasih telah berlangganan newsletter POP MART!')
+    setNewsletterEmail('')
+  }
 
   return (
     <Screen header={<LogoHeader />} bottom={<BottomNav active="home" />}>
@@ -44,8 +56,13 @@ export default function Home() {
             {IP_STRIP.map((key) => {
               const ip = IP[key]
               return (
-                <button key={key} type="button" onClick={() => nav.tab('list')} className="w-[76px] shrink-0 flex flex-col items-center gap-2">
-                  <span className="relative w-[76px] h-[76px] rounded-full overflow-hidden flex items-center justify-center" style={{ background: ip.tint }}>
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => nav.tab('list', { ip: key, chip: 'Semua' })}
+                  className="w-[76px] shrink-0 flex flex-col items-center gap-2 hover:opacity-85 transition-opacity cursor-pointer"
+                >
+                  <span className="relative w-[76px] h-[76px] rounded-full overflow-hidden flex items-center justify-center shadow-sm" style={{ background: ip.tint }}>
                     {ip.img ? (
                       <img src={ip.img} alt={ip.label} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
                     ) : (
@@ -64,7 +81,20 @@ export default function Home() {
           <SectionHead title="KATEGORI PRODUK" />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {CATEGORIES.map(([label, ic]) => (
-              <button key={label} type="button" onClick={() => nav.tab('list')} className="h-28 p-4 rounded-xl bg-surface flex flex-col justify-between items-start text-left">
+              <button
+                key={label}
+                type="button"
+                onClick={() => {
+                  const chipMap = {
+                    'Semua Kotak Buta': 'Kotak Buta',
+                    'Figurine': 'Figurine',
+                    'Boneka Plush & Pendant': 'Vinyl Plush',
+                    'Aksesoris & Tas': 'Tas',
+                  }
+                  nav.tab('list', { category: label, chip: chipMap[label] || label })
+                }}
+                className="h-28 p-4 rounded-xl bg-surface hover:bg-neutral-100 flex flex-col justify-between items-start text-left transition-colors cursor-pointer"
+              >
                 <Icon name={ic} size={28} />
                 <span className="t-heading">{label}</span>
               </button>
@@ -81,7 +111,11 @@ export default function Home() {
           <div className="flex flex-col">
             {MEGA_ITEMS.map(([name, size], i) => (
               <div key={name}>
-                <button type="button" onClick={() => nav.tab('list')} className="w-full flex items-center gap-3.5 py-3 text-left">
+                <button
+                  type="button"
+                  onClick={() => nav.go('detail', { id: i === 0 ? 'mly_2' : 'mly_3' })}
+                  className="w-full flex items-center gap-3.5 py-3 text-left hover:opacity-85 transition-opacity cursor-pointer"
+                >
                   <span className="w-16 h-16 rounded-[10px] bg-dark2 text-white t-caption flex items-center justify-center shrink-0">{size}</span>
                   <span className="t-strong text-white flex-1">{name}</span>
                   <Icon name="chevRight" size={18} color="#BDBDBD" />
@@ -90,7 +124,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <Button kind="secondary" onClick={() => nav.tab('list')}>BELI SEKARANG</Button>
+          <Button kind="secondary" onClick={() => nav.go('detail', { id: 'mly_3' })}>BELI SEKARANG</Button>
         </section>
 
         {/* Produk Populer */}
@@ -108,24 +142,51 @@ export default function Home() {
         <section className="bg-surface px-4 py-7 lg:mx-4 lg:rounded-2xl lg:px-10 lg:py-10 flex flex-col gap-3 lg:max-w-[640px] lg:self-center lg:w-full">
           <h2 className="t-title">GABUNG DENGAN KOMUNITAS</h2>
           <p className="t-body text-ink2">Jadilah yang pertama mendapatkan rilis terbaru, penawaran eksklusif, dan banyak lagi.</p>
-          <div className="h-1" />
-          <Field icon="mail" type="email" placeholder="Alamat email" />
-          <Button>BERLANGGANAN</Button>
+          <form onSubmit={handleSubscribe} className="flex flex-col gap-3 pt-1">
+            <Field
+              icon="mail"
+              type="email"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              placeholder="Alamat email Anda"
+            />
+            <Button type="submit">BERLANGGANAN</Button>
+          </form>
         </section>
 
         {/* Hubungi Kami + footer */}
         <section className="px-4 flex flex-col gap-5">
           <SectionHead title="HUBUNGI KAMI" />
-          <div className="flex flex-col gap-3">
-            <InfoRow icon="clock" title="Layanan Pelanggan Online" sub="Monday–Sunday 9:00am–18:00pm CST" />
-            <InfoRow icon="mail" title="Email Kami" />
-            <InfoRow icon="help" title="Kunjungi Pusat Bantuan (FAQ)" />
-            <InfoRow icon="phone" title="Layanan Pengaduan Konsumen" sub="PT Pop Mart Indonesia · WhatsApp +62 811-162-1312" />
+          <div className="flex flex-col gap-2">
+            <InfoRow
+              icon="clock"
+              title="Layanan Pelanggan Online"
+              sub="Senin–Minggu 09.00–18.00 WIB"
+              onClick={() => notify('Layanan CS Pop Mart: Aktif 09.00 - 18.00 WIB')}
+            />
+            <InfoRow
+              icon="mail"
+              title="Email Kami"
+              sub="cs@popmart.co.id"
+              onClick={() => window.open('mailto:cs@popmart.co.id')}
+            />
+            <InfoRow
+              icon="help"
+              title="Kunjungi Pusat Bantuan (FAQ)"
+              sub="Pertanyaan umum tentang pesanan & produk"
+              onClick={() => nav.go('account')}
+            />
+            <InfoRow
+              icon="phone"
+              title="Layanan Pengaduan Konsumen"
+              sub="PT Pop Mart Indonesia · WhatsApp +62 811-162-1312"
+              onClick={() => window.open('https://wa.me/628111621312', '_blank')}
+            />
           </div>
           <Divider />
           <div className="flex flex-wrap gap-2">
-            <Chip icon="globe">Negara: IDR</Chip>
-            <Chip>Bahasa Indonesia</Chip>
+            <Chip icon="globe" onClick={() => notify('Wilayah aktif: Indonesia (IDR)')}>Negara: IDR</Chip>
+            <Chip onClick={() => notify('Bahasa aktif: Bahasa Indonesia')}>Bahasa Indonesia</Chip>
           </div>
           <div className="flex flex-col gap-2.5">
             <span className="t-caption text-muted">Metode pembayaran</span>

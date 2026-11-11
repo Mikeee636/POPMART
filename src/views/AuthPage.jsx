@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../context/StoreContext';
 import {
   Eye,
@@ -18,7 +19,7 @@ export const AuthPage = () => {
 
   // Login Form State (pre-filled with official admin credentials)
   const [loginForm, setLoginForm] = useState({
-    email: 'admin@popmart.co.id',
+    email: 'admin@popmart.com',
     password: 'admin123'
   });
 
@@ -38,9 +39,18 @@ export const AuthPage = () => {
       return;
     }
 
-    loginAdmin({
+    const res = loginAdmin({
       email: loginForm.email.trim()
     });
+
+    if (res && res.success) {
+      if (res.role === 'Admin') {
+        window.location.hash = '#/admin';
+      } else {
+        // Alihkan role User / Customer ke halaman Toko
+        window.location.hash = '#/';
+      }
+    }
   };
 
   const handleRegisterSubmit = (e) => {
@@ -117,13 +127,18 @@ export const AuthPage = () => {
       {/* ============================================================== */}
       {/* 3. LOGO POP MART (Mentok Kiri Atas)                            */}
       {/* ============================================================== */}
-      <div className="absolute top-3 left-4 sm:top-4 sm:left-6 lg:top-5 lg:left-8 z-30">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="absolute top-3 left-4 sm:top-4 sm:left-6 lg:top-5 lg:left-8 z-30"
+      >
         <img
           src="/popmart-red-logo.png"
           alt="POP MART"
           className="h-9 sm:h-11 lg:h-12 w-auto object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.7)]"
         />
-      </div>
+      </motion.div>
 
       {/* ============================================================== */}
       {/* 4. MAIN FOREGROUND CONTENT CONTAINER (Centered & Non-Scrollable) */}
@@ -134,33 +149,65 @@ export const AuthPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center w-full py-4">
           
           {/* LEFT SIDE: Big Bold Headline (Sesuai Desain Gambar 1) */}
-          <div className="lg:col-span-7 xl:col-span-7 text-white space-y-4 max-w-xl">
+          <motion.div
+            initial={{ opacity: 0, x: -28 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="lg:col-span-7 xl:col-span-7 text-white space-y-4 max-w-xl"
+          >
             <h1 className="text-4xl sm:text-5xl lg:text-[58px] font-black leading-[1.1] tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]">
               Every big thing <br />starts small
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-white/95 font-medium drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] leading-relaxed">
               Log in and continue exploring the official Pop Mart universe.
             </p>
-          </div>
+          </motion.div>
 
           {/* RIGHT SIDE: Floating Login/Register Card (Sesuai Desain Gambar 1) */}
           <div className="lg:col-span-5 xl:col-span-5 flex justify-center lg:justify-end">
-            <div className="w-full max-w-[440px] bg-[#fffaf5] dark:bg-zinc-900/95 backdrop-blur-2xl rounded-[36px] sm:rounded-[42px] p-7 sm:p-9 shadow-[0_30px_70px_rgba(0,0,0,0.45)] border border-white/60 dark:border-zinc-800 transition-all duration-300">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-[440px] bg-[#fffaf5] dark:bg-zinc-900/95 backdrop-blur-2xl rounded-[36px] sm:rounded-[42px] p-7 sm:p-9 shadow-[0_30px_70px_rgba(0,0,0,0.45)] border border-white/60 dark:border-zinc-800 transition-all duration-300"
+            >
               
               {/* Card Title */}
               <h2 className="text-2xl sm:text-[26px] font-bold text-zinc-900 dark:text-white text-center mb-6 tracking-tight">
                 {isLoginMode ? 'Log in to your account' : 'Create your account'}
               </h2>
 
-              <a href="#/" className="block text-center text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white -mt-3 mb-5 transition">
-                ← Kembali ke toko
-              </a>
-
               {/* ======================= */}
               {/* LOGIN FORM              */}
               {/* ======================= */}
               {isLoginMode ? (
                 <form onSubmit={handleLoginSubmit} className="space-y-4">
+                  {/* Quick Account Switcher */}
+                  <div className="flex items-center gap-2 pb-1">
+                    <button
+                      type="button"
+                      onClick={() => setLoginForm({ email: 'admin@popmart.com', password: 'admin123' })}
+                      className={`flex-1 py-1.5 px-2 rounded-xl text-[11px] font-bold transition border cursor-pointer ${
+                        loginForm.email === 'admin@popmart.com'
+                          ? 'bg-zinc-900 text-white border-zinc-900 shadow-sm'
+                          : 'bg-white hover:bg-zinc-100 text-zinc-700 border-zinc-200'
+                      }`}
+                    >
+                      👑 Admin
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLoginForm({ email: 'customer@gmail.com', password: 'customer123' })}
+                      className={`flex-1 py-1.5 px-2 rounded-xl text-[11px] font-bold transition border cursor-pointer ${
+                        loginForm.email === 'customer@gmail.com'
+                          ? 'bg-zinc-900 text-white border-zinc-900 shadow-sm'
+                          : 'bg-white hover:bg-zinc-100 text-zinc-700 border-zinc-200'
+                      }`}
+                    >
+                      🛍️ Customer
+                    </button>
+                  </div>
+
                   {/* Email address */}
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
@@ -348,7 +395,7 @@ export const AuthPage = () => {
                   </div>
                 </form>
               )}
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

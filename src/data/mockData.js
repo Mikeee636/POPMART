@@ -385,7 +385,7 @@ export const DEFAULT_USERS = [
   {
     id: 'USR-001',
     name: 'Admin Pop Mart',
-    email: 'admin@popmart.co.id',
+    email: 'admin@popmart.com',
     phone: '0811-1234-5678',
     role: 'admin',
     avatar: '',
@@ -397,8 +397,8 @@ export const DEFAULT_USERS = [
   },
   {
     id: 'USR-002',
-    name: 'Mikel',
-    email: 'mikel@popmart.com',
+    name: 'Rina Pratama',
+    email: 'customer@gmail.com',
     phone: '0812-3456-7890',
     role: 'customer',
     avatar: '',

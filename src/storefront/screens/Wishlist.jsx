@@ -1,5 +1,5 @@
 import { useShop } from '../context/ShopContext'
-import { BackHeader, Screen } from '../components/Layout'
+import { BackHeader, BottomNav, Screen } from '../components/Layout'
 import Icon from '../components/Icon'
 import ProductCard, { ProductGrid } from '../components/ProductCard'
 import { Button } from '../components/ui'
@@ -10,7 +10,10 @@ export default function Wishlist() {
   const items = Object.keys(CART_ITEMS).filter((id) => wish[id])
 
   return (
-    <Screen header={<BackHeader title={`Wishlist (${wishCount})`} cart />}>
+    <Screen
+      header={<BackHeader title={`Wishlist (${wishCount})`} cart />}
+      bottom={<BottomNav active="account" />}
+    >
       <div className="px-4 pt-2 pb-8 flex flex-col gap-4">
         {items.length > 0 ? (
           <>
@@ -26,8 +29,8 @@ export default function Wishlist() {
           <div className="flex flex-col items-center gap-3 px-6 py-8 rounded-xl bg-surface text-center">
             <Icon name="heart" size={40} />
             <h2 className="t-heading">Wishlist kamu masih kosong</h2>
-            <p className="t-body text-ink2">Ketuk ikon hati di produk Hirono untuk menyimpannya di sini.</p>
-            <Button className="w-full" onClick={() => nav.tab('home')}>MULAI BELANJA</Button>
+            <p className="t-body text-ink2">Ketuk ikon hati di figur POP MART favoritmu untuk menyimpannya di sini.</p>
+            <Button className="w-full mt-2" onClick={() => nav.tab('list')}>MULAI BELANJA</Button>
           </div>
         )}
       </div>

@@ -21,13 +21,13 @@ const STORAGE_KEYS = {
 
 const DEFAULT_ADMIN = {
   name: 'Admin Pop Mart',
-  email: 'admin@popmart.co.id',
+  email: 'admin@popmart.com',
   role: 'Admin',
   avatar: ''
 };
 
 const DATASET_VERSION_KEY = 'popmart_dataset_version';
-const CURRENT_DATASET_VERSION = 'v2026_dataset_zip_all_ips_and_products_v10';
+const CURRENT_DATASET_VERSION = 'v2026_dataset_zip_all_ips_and_products_v12';
 
 // Helper for safe JSON parse from localStorage
 const safeParse = (key, fallback) => {
@@ -55,6 +55,8 @@ if (typeof window !== 'undefined') {
       localStorage.removeItem(STORAGE_KEYS.USERS);
       localStorage.removeItem(STORAGE_KEYS.ORDERS);
       localStorage.removeItem(STORAGE_KEYS.ADMIN);
+      localStorage.removeItem('popmart_react_is_authenticated');
+      localStorage.removeItem('popmart_react_current_user');
       localStorage.setItem(DATASET_VERSION_KEY, CURRENT_DATASET_VERSION);
     }
   } catch (err) {
@@ -121,9 +123,9 @@ export const StoreProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     try {
       const savedAuth = localStorage.getItem('popmart_react_is_authenticated');
-      return savedAuth !== null ? JSON.parse(savedAuth) : true;
+      return savedAuth !== null ? JSON.parse(savedAuth) : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -150,7 +152,13 @@ export const StoreProvider = ({ children }) => {
 
   const logoutAdmin = () => {
     setIsAuthenticated(false);
-    showToast('Anda telah keluar dari sesi admin.', 'info');
+    try {
+      localStorage.removeItem(STORAGE_KEYS.ADMIN);
+      localStorage.removeItem('popmart_react_current_user');
+      localStorage.setItem('popmart_react_is_authenticated', JSON.stringify(false));
+    } catch (e) {}
+    showToast('Anda telah keluar dari sesi.', 'info');
+    window.location.hash = '#/login';
   };
 
   const loginAdmin = (user = adminUser || DEFAULT_ADMIN) => {
@@ -165,47 +173,54 @@ export const StoreProvider = ({ children }) => {
         role: foundUser.role?.toLowerCase() === 'admin' ? 'Admin' : 'Customer',
         avatar: foundUser.avatar || ''
       };
-    } else if (inputEmail === 'admin@popmart.co.id' || inputEmail === 'michael@popmart.co.id') {
+    } else if (inputEmail === 'admin@popmart.com' || inputEmail === 'admin@popmart.co.id' || inputEmail === 'michael@popmart.co.id') {
       finalData = {
-        name: inputEmail === 'admin@popmart.co.id' ? 'Admin Pop Mart' : (user.name || 'Admin'),
-        email: inputEmail,
+        name: 'Admin Pop Mart',
+        email: 'admin@popmart.com',
         role: 'Admin',
         avatar: user.avatar || ''
       };
-    } else if (inputEmail === 'mikel@popmart.com' || inputEmail === 'customer@popmart.co.id' || inputEmail === 'sarah.wijaya@gmail.com') {
+    } else if (inputEmail === 'customer@gmail.com' || inputEmail === 'mikel@popmart.com' || inputEmail === 'customer@popmart.co.id' || inputEmail === 'rina.p@email.com') {
       finalData = {
-        name: 'Mikel',
-        email: inputEmail,
+        name: 'Rina Pratama',
+        email: 'customer@gmail.com',
         role: 'Customer',
         avatar: ''
       };
     } else if (user.role) {
       finalData = {
-        name: user.name || 'User',
-        email: inputEmail || 'user@popmart.co.id',
+        name: user.name || (user.role?.toLowerCase() === 'admin' ? 'Admin' : 'Customer'),
+        email: inputEmail || 'customer@gmail.com',
         role: user.role?.toLowerCase() === 'admin' ? 'Admin' : 'Customer',
         avatar: user.avatar || ''
       };
     } else {
+      const isRoleAdmin = inputEmail.includes('admin');
       finalData = {
-        name: user.name || 'Customer',
-        email: inputEmail || 'customer@popmart.co.id',
-        role: 'Customer',
+        name: user.name || (isRoleAdmin ? 'Admin Pop Mart' : 'Rina Pratama'),
+        email: inputEmail || (isRoleAdmin ? 'admin@popmart.com' : 'customer@gmail.com'),
+        role: isRoleAdmin ? 'Admin' : 'Customer',
         avatar: ''
       };
     }
 
-    // HANYA ROLE ADMIN YANG DAPAT MASUK KE DASHBOARD ADMIN
-    if (finalData.role !== 'Admin') {
-      showToast('Akses ditolak! Hanya akun dengan role Admin yang dapat masuk ke dashboard admin.', 'error');
-      setIsAuthenticated(false);
-      return false;
-    }
-
+    // Baik Admin maupun Customer diotentikasi ke sistem
     setAdminUser(finalData);
     setIsAuthenticated(true);
-    showToast(`Selamat datang, ${finalData.name}! Akses Admin terverifikasi.`);
-    return true;
+    try {
+      localStorage.setItem(STORAGE_KEYS.ADMIN, JSON.stringify(finalData));
+      localStorage.setItem('popmart_react_current_user', JSON.stringify(finalData));
+      localStorage.setItem('popmart_react_is_authenticated', JSON.stringify(true));
+    } catch (e) {}
+
+    // Role-based routing: Admin ke Dashboard Admin, Customer ke Halaman Toko
+    if (finalData.role === 'Admin') {
+      showToast(`Selamat datang, ${finalData.name}! Membuka Dashboard Admin...`);
+      return { success: true, role: 'Admin', user: finalData };
+    } else {
+      showToast(`Selamat datang, ${finalData.name}! Mengalihkan ke Halaman Toko...`);
+      return { success: true, role: 'Customer', user: finalData };
+    }
   };
 
   const registerAdmin = (newUser) => {
