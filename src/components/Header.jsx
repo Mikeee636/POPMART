@@ -5,7 +5,8 @@ import {
   Sun,
   Moon,
   User,
-  LogOut
+  LogOut,
+  Store
 } from 'lucide-react';
 import {
   EditProfileModal,
@@ -125,6 +126,17 @@ export const Header = ({ onToggleSidebar }) => {
                     <User className="w-4 h-4 text-zinc-500" />
                     <span>Edit Profil</span>
                   </button>
+                </div>
+
+                {/* Link ke storefront */}
+                <div className="p-1.5 border-t border-zinc-100 dark:border-zinc-800">
+                  <a
+                    href="#/"
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-left cursor-pointer"
+                  >
+                    <Store className="w-4 h-4 text-zinc-500" />
+                    <span>Lihat Toko</span>
+                  </a>
                 </div>
 
                 {/* Logout Button */}

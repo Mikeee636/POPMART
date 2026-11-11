@@ -152,6 +152,10 @@ export const AuthPage = () => {
                 {isLoginMode ? 'Log in to your account' : 'Create your account'}
               </h2>
 
+              <a href="#/" className="block text-center text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white -mt-3 mb-5 transition">
+                ← Kembali ke toko
+              </a>
+
               {/* ======================= */}
               {/* LOGIN FORM              */}
               {/* ======================= */}

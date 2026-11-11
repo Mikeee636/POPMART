@@ -87,3 +87,25 @@ Aplikasi **Dashboard Admin Pop Mart** modern berbasis **React** dan **Tailwind C
    npm run preview
    ```
 
+
+---
+
+## 🛍️ Storefront + Admin dalam Satu App (Routing)
+
+App ini sekarang berisi dua aplikasi dengan **react-router-dom (HashRouter)**, jadi tidak butuh konfigurasi server:
+
+| URL | Isi |
+|-----|-----|
+| `/#/` | **Storefront** toko POP MART (mobile < 1024px, web >= 1024px) |
+| `/#/admin` | **Dashboard Admin** (punya halaman login sederhana sendiri) |
+
+- Kode storefront ada di `src/storefront/` (data mock, state keranjang/wishlist in-memory, 11 layar), asetnya di `public/storefront/`.
+- Dashboard admin tetap di `src/` (`App.jsx`, `views/`, `components/`) dan di-load lazy hanya saat `/admin` dibuka.
+- Navigasi antar app: tombol **Masuk sebagai Admin** di layar Masuk toko, menu **Dashboard Admin** di layar Saya, serta **Lihat Toko** di menu profil admin dan **Kembali ke toko** di halaman login admin.
+- Login bersifat demo (client-side, tersimpan di localStorage), bukan autentikasi sungguhan. Kredensial admin: `admin@popmart.co.id` / `admin123`.
+
+```bash
+npm install
+npm run dev     # http://localhost:5173/#/  dan  /#/admin
+npm run build
+```
