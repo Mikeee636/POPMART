@@ -1,7 +1,9 @@
 // Mock catalog taken from the Figma plugin mockup. Hirono prices are from popmart.com/id,
 // the rest are illustrative. Images come from "POPMART FILE data".
-const img = (f) => `./images/products/${f}`
-const ipImg = (f) => `./images/ip/${f}`
+import { asset } from '../utils/asset'
+
+const img = (f) => asset(`products/${f}`)
+const ipImg = (f) => asset(`ip/${f}`)
 
 export const SHIPPING = 20000
 export const MAX_QTY = 5

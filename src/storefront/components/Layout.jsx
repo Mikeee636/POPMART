@@ -1,6 +1,7 @@
 import { useShop } from '../context/ShopContext'
 import Icon from './Icon'
 import { IconBtn, CountDot, cx } from './ui'
+import { asset } from '../utils/asset'
 
 /*
   Two layouts only (no tablet layout):
@@ -40,7 +41,7 @@ export function LogoHeader() {
   return (
     <HeaderShell>
       <div className="h-14 pl-4 pr-2 flex items-center justify-between">
-        <img src="./images/logo-wordmark.png" alt="POP MART" className="h-[30px] w-auto" />
+        <img src={asset('logo-wordmark.png')} alt="POP MART" className="h-[30px] w-auto" />
         <div className="flex items-center">
           <IconBtn name="search" label="Cari" onClick={() => nav.go('search')} />
           <WishButton />
@@ -142,7 +143,7 @@ function DesktopNav() {
     <header className="hidden lg:block shrink-0 bg-white border-b border-line z-20">
       <div className="mx-auto max-w-[1120px] h-[72px] px-8 flex items-center gap-8">
         <button type="button" onClick={() => nav.tab('home')} aria-label="POP MART">
-          <img src="./images/logo-wordmark.png" alt="POP MART" className="h-8 w-auto" />
+          <img src={asset('logo-wordmark.png')} alt="POP MART" className="h-8 w-auto" />
         </button>
         <nav className="flex items-center gap-1">
           {DESKTOP_LINKS.map(([label, name]) => (
@@ -211,7 +212,7 @@ export function Toast() {
 // Phone column (max 480px) below lg, full-width web page on lg+.
 export function Frame({ children }) {
   return (
-    <div className="h-[100dvh] bg-surface">
+    <div className="store-root h-[100dvh] bg-surface">
       <div className="relative h-full w-full max-w-[480px] lg:max-w-none mx-auto bg-white overflow-hidden shadow-[0_0_0_1px_#E7E5E1] lg:shadow-none">
         {children}
       </div>

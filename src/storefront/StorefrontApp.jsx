@@ -36,7 +36,7 @@ function Router() {
   return <Current key={key} params={top.params} />
 }
 
-export default function App() {
+export default function StorefrontApp() {
   return (
     <ShopProvider>
       <Frame>

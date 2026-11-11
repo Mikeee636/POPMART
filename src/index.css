@@ -59,3 +59,45 @@
 .modal-animate {
   animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ===== Storefront (route "/") ===== */
+.store-root { font-family: Montserrat, system-ui, sans-serif; color: #111111; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+.store-root button { cursor: pointer; }
+.store-root input { font-family: inherit; }
+
+/* Type scale from the Figma plugin (Montserrat, one family everywhere) */
+@layer components {
+  .t-logo { @apply text-xl leading-6 font-black tracking-[-0.02em]; }
+  .t-display { @apply text-[28px] leading-[34px] font-extrabold tracking-[-0.02em]; }
+  .t-title { @apply text-xl leading-[26px] font-bold tracking-[-0.01em]; }
+  .t-heading { @apply text-base leading-[22px] font-bold tracking-[-0.005em]; }
+  .t-body { @apply text-sm leading-[21px] font-normal; }
+  .t-strong { @apply text-sm leading-5 font-semibold; }
+  .t-caption { @apply text-xs leading-4 font-medium; }
+  .t-label { @apply text-[10px] leading-3 font-bold tracking-[0.04em] uppercase; }
+  .t-price { @apply text-[15px] leading-5 font-bold; }
+  .t-price-lg { @apply text-[22px] leading-7 font-bold tracking-[-0.01em]; }
+  .t-button { @apply text-sm leading-5 font-bold tracking-[0.04em]; }
+  .t-nav { @apply text-[11px] leading-[14px] font-semibold; }
+  .t-nav-active { @apply text-[11px] leading-[14px] font-bold; }
+}
+
+@keyframes screen-in {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes toast-in {
+  from { transform: translate(-50%, 8px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+@layer utilities {
+  .screen-enter { animation: screen-in 0.28s ease-out; }
+  .toast-enter { animation: toast-in 0.2s ease-out; }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -1,6 +1,7 @@
 import { useShop } from '../context/ShopContext'
 import { BackHeader, Screen } from '../components/Layout'
 import { Button, Field } from '../components/ui'
+import { asset } from '../utils/asset'
 
 export default function Login() {
   const { nav, notify } = useShop()
@@ -15,7 +16,7 @@ export default function Login() {
         className="flex flex-col gap-5 px-6 pt-4 pb-8"
       >
         <div className="flex flex-col gap-2">
-          <img src="./images/logo-appicon.png" alt="POP MART" className="w-16 h-16" />
+          <img src={asset('logo-appicon.png')} alt="POP MART" className="w-16 h-16" />
           <div className="h-1" />
           <h2 className="t-display">Masuk ke akun kamu</h2>
           <p className="t-body text-ink2">Lacak pesanan, simpan wishlist, dan jadi yang pertama tahu rilis terbaru.</p>
@@ -34,6 +35,7 @@ export default function Login() {
         </div>
         <Button kind="secondary" onClick={demo}>LANJUTKAN DENGAN GOOGLE</Button>
         <Button kind="secondary" onClick={demo}>LANJUTKAN DENGAN APPLE</Button>
+        <a href="#/admin" className="t-caption underline text-center">Masuk sebagai Admin →</a>
         <p className="flex justify-center gap-1 py-2 t-caption">
           <span className="text-ink2">Belum punya akun?</span>
           <button type="button" onClick={demo} className="underline">Daftar</button>

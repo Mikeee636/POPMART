@@ -44,6 +44,7 @@ export default function Account() {
           <ListRow icon="globe" label="Negara & Bahasa" value="IDR · Indonesia" onClick={demo} />
           <ListRow icon="help" label="Pusat Bantuan (FAQ)" onClick={demo} />
           <ListRow icon="mail" label="Hubungi Kami" onClick={demo} />
+          <ListRow icon="shield" label="Dashboard Admin" onClick={() => { window.location.hash = '#/admin' }} />
           <ListRow icon="logout" label="Keluar" danger last onClick={() => nav.go('login')} />
         </section>
       </div>
