@@ -108,7 +108,7 @@ export function BottomNav({ active }) {
   const { nav, summary } = useShop()
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 lg:hidden z-40 bg-white border-t border-line shadow-[0_-2px_12px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom,0px)]">
+    <nav className="fixed bottom-0 inset-x-0 lg:hidden z-40 bg-white dark:bg-zinc-950 border-t border-line dark:border-zinc-800 shadow-[0_-2px_12px_rgba(0,0,0,0.06)] pb-[env(safe-area-inset-bottom,0px)]">
       <div className="w-full max-w-[480px] mx-auto h-[54px] px-2 flex items-center justify-around">
         {TABS.map(([label, ic, target]) => {
           const on = target === active
@@ -125,13 +125,14 @@ export function BottomNav({ active }) {
                   name={ic}
                   size={24}
                   color={on ? '#111111' : '#6B6B6B'}
+                  className={on ? 'dark:stroke-white' : 'dark:stroke-neutral-400'}
                   sw={on ? 2.2 : 1.75}
                 />
                 {target === 'cart' && summary.count > 0 && (
                   <CountDot value={summary.count} className="-top-1 left-4" />
                 )}
               </span>
-              <span className={cx(on ? 't-nav-active text-ink font-semibold' : 't-nav text-muted')}>
+              <span className={cx(on ? 't-nav-active text-ink dark:text-white font-semibold' : 't-nav text-muted dark:text-neutral-400')}>
                 {label}
               </span>
             </button>
@@ -144,7 +145,7 @@ export function BottomNav({ active }) {
 
 export function ActionBar({ children }) {
   return (
-    <div className="fixed lg:static bottom-0 inset-x-0 z-40 bg-white shadow-bar pt-3 pb-[calc(env(safe-area-inset-bottom,0px)+12px)] lg:pb-3 border-t border-line/60">
+    <div className="fixed lg:static bottom-0 inset-x-0 z-40 bg-white dark:bg-zinc-950 shadow-bar pt-3 pb-[calc(env(safe-area-inset-bottom,0px)+12px)] lg:pb-3 border-t border-line/60 dark:border-zinc-800">
       <div className="flex items-center gap-3 px-4 w-full max-w-[480px] lg:max-w-[640px] mx-auto">{children}</div>
     </div>
   )
@@ -207,7 +208,7 @@ function DesktopNav() {
 export function Screen({ header, bottom, children, className, narrow }) {
   const { stack, nav } = useShop()
   return (
-    <div className="min-h-screen lg:h-full flex flex-col bg-white">
+    <div className="min-h-screen lg:h-full flex flex-col bg-white dark:bg-black text-ink dark:text-white">
       <DesktopNav />
       {header}
       <main className={cx('flex-1 pb-24 lg:pb-8 lg:overflow-y-auto overflow-x-hidden')}>
@@ -237,7 +238,7 @@ export function Toast() {
           animate={{ opacity: 1, y: 0, x: '-50%' }}
           exit={{ opacity: 0, y: 14, x: '-50%' }}
           transition={{ duration: 0.2 }}
-          className="t-caption fixed left-1/2 bottom-20 lg:bottom-10 z-50 bg-black text-white px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap pointer-events-none"
+          className="t-caption fixed left-1/2 bottom-20 lg:bottom-10 z-50 bg-black dark:bg-white text-white dark:text-black border border-white/20 dark:border-black/20 px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap pointer-events-none font-medium"
         >
           {toast}
         </motion.div>
@@ -249,8 +250,8 @@ export function Toast() {
 // Phone column (max 480px) below lg, full-width web page on lg+.
 export function Frame({ children }) {
   return (
-    <div className="store-root min-h-screen w-full bg-surface">
-      <div className="relative min-h-screen w-full max-w-[480px] lg:max-w-none mx-auto bg-white shadow-[0_0_0_1px_#E7E5E1] lg:shadow-none">
+    <div className="store-root min-h-screen w-full bg-surface dark:bg-black">
+      <div className="relative min-h-screen w-full max-w-[480px] lg:max-w-none mx-auto bg-white dark:bg-black shadow-[0_0_0_1px_#E7E5E1] dark:shadow-none lg:shadow-none">
         {children}
       </div>
     </div>

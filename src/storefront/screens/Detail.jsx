@@ -41,13 +41,13 @@ export default function Detail({ params }) {
         <HeartButton id={product.cart || product.id} kind="framed" />
         <Button
           kind="secondary"
-          className="flex-1 text-xs sm:text-sm font-bold border-[1.5px] border-black text-black"
+          className="flex-1 text-xs sm:text-sm font-bold border-[1.5px] border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 text-black dark:text-white"
           onClick={handleAddToCart}
         >
           + KERANJANG
         </Button>
         <Button
-          className="flex-1 text-xs sm:text-sm font-bold bg-black text-white hover:bg-neutral-900 border-none"
+          className="flex-1 text-xs sm:text-sm font-bold bg-white text-black border border-neutral-300 shadow-md hover:bg-neutral-100 active:scale-[0.98] transition-all"
           onClick={handleCheckout}
         >
           CHECKOUT
