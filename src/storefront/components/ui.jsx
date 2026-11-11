@@ -9,9 +9,7 @@ export function Button({ kind = 'primary', children, className, ...rest }) {
       type="button"
       className={cx(
         't-button h-[52px] px-5 rounded-[10px] inline-flex items-center justify-center gap-2 transition-opacity active:opacity-80',
-        kind === 'primary'
-          ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-900 dark:hover:bg-neutral-100'
-          : 'bg-white dark:bg-neutral-900 text-black dark:text-white border-[1.5px] border-black dark:border-white hover:bg-neutral-50 dark:hover:bg-neutral-800',
+        kind === 'primary' ? 'bg-black text-white hover:bg-neutral-900' : 'bg-white text-black border-[1.5px] border-black hover:bg-neutral-50',
         className,
       )}
       {...rest}
@@ -38,7 +36,7 @@ export function IconBtn({ name, size = 44, iconSize = 24, color, sw, label, clas
 
 export function CountDot({ value, className }) {
   return (
-    <span className={cx('t-label absolute min-w-4 h-4 px-1 rounded-full bg-black dark:bg-white text-white dark:text-black inline-flex items-center justify-center font-bold text-[10px] leading-none shadow-sm ring-1 ring-white/30 dark:ring-black/30', className)}>
+    <span className={cx('t-label absolute min-w-4 h-4 px-1 rounded-full bg-black text-white inline-flex items-center justify-center font-bold text-[10px] leading-none shadow-sm', className)}>
       {value}
     </span>
   )

@@ -93,10 +93,12 @@ export default function Home() {
                   }
                   nav.tab('list', { category: label, chip: chipMap[label] || label })
                 }}
-                className="h-28 p-4 rounded-xl bg-surface hover:bg-neutral-100 flex flex-col justify-between items-start text-left transition-colors cursor-pointer"
+                className="h-32 p-4 rounded-2xl bg-white dark:bg-zinc-900 border-[1.5px] border-line hover:border-black dark:border-zinc-800 dark:hover:border-white shadow-sm hover:shadow-md flex flex-col justify-between items-start text-left transition-all cursor-pointer group active:scale-[0.98]"
               >
-                <Icon name={ic} size={28} />
-                <span className="t-heading">{label}</span>
+                <span className="w-11 h-11 rounded-xl bg-surface dark:bg-zinc-800 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Icon name={ic} size={24} />
+                </span>
+                <span className="t-heading text-ink dark:text-white font-bold">{label}</span>
               </button>
             ))}
           </div>

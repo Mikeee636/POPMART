@@ -3,7 +3,7 @@ import { useShop } from '../context/ShopContext'
 import { BottomNav, Screen, TitleHeader } from '../components/Layout'
 import Icon from '../components/Icon'
 import ProductCard, { ProductGrid } from '../components/ProductCard'
-import { Chip, HScroll, IconBtn } from '../components/ui'
+import { Chip, HScroll, IconBtn, cx } from '../components/ui'
 import { LIST_CHIPS, LIST_KEYS, PRODUCTS, IP } from '../data/catalog'
 
 const SORT_OPTIONS = [
@@ -30,12 +30,8 @@ export default function Category({ params }) {
   const [activeChip, setActiveChip] = useState(initialChip)
   const [selectedIp, setSelectedIp] = useState(params?.ip || null)
   const [sortIndex, setSortIndex] = useState(0)
-  const [showFilters, setShowFilters] = useState(Boolean(params?.ip))
-
-  // Cycle sort order on click
-  const cycleSort = () => {
-    setSortIndex((prev) => (prev + 1) % SORT_OPTIONS.length)
-  }
+  const [isSortOpen, setIsSortOpen] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const activeSort = SORT_OPTIONS[sortIndex]
 
@@ -99,55 +95,152 @@ export default function Category({ params }) {
           ))}
         </HScroll>
 
-        {/* Optional IP Filter Bar (toggled by filter button or when IP selected) */}
-        {showFilters && (
-          <div className="px-4 py-2 bg-surface/60 border-y border-line flex flex-col gap-2">
-            <span className="t-caption text-muted font-medium">Filter Karakter IP:</span>
-            <div className="flex flex-wrap gap-1.5">
-              <button
-                type="button"
-                onClick={() => setSelectedIp(null)}
-                className={`t-caption px-2.5 py-1 rounded-md cursor-pointer ${!selectedIp ? 'bg-ink text-white' : 'bg-white text-ink border border-line'}`}
-              >
-                Semua IP
-              </button>
-              {Object.entries(IP).map(([k, val]) => (
-                <button
-                  key={k}
-                  type="button"
-                  onClick={() => setSelectedIp(selectedIp === k ? null : k)}
-                  className={`t-caption px-2.5 py-1 rounded-md cursor-pointer ${selectedIp === k ? 'bg-ink text-white' : 'bg-white text-ink border border-line'}`}
-                >
-                  {val.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Toolbar: Product Count, Sort Toggle & Filter Button */}
-        <div className="flex items-center justify-between pl-4 pr-2">
+        {/* Toolbar: Product Count, Dropdown Urutkan & Dropdown Filter (Button Garis) */}
+        <div className="flex items-center justify-between pl-4 pr-3 relative z-30">
           <span className="t-caption text-muted font-medium">
             {filteredKeys.length} produk {selectedIp ? `(${IP[selectedIp]?.label})` : ''}
           </span>
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={cycleSort}
-              title="Ketuk untuk mengubah urutan"
-              className="t-caption h-10 px-2.5 rounded-lg hover:bg-surface inline-flex items-center gap-1.5 cursor-pointer text-ink transition-colors"
-            >
-              <span className="text-muted">Urutkan:</span>
-              <span className="font-semibold">{activeSort.label}</span>
-              <Icon name="chevDown" size={15} />
-            </button>
-            <IconBtn
-              name="sliders"
-              iconSize={20}
-              label="Filter Karakter"
-              className={showFilters ? 'bg-ink/10 rounded-lg' : ''}
-              onClick={() => setShowFilters((prev) => !prev)}
-            />
+
+          <div className="flex items-center gap-1.5 relative">
+            {/* 1. Dropdown Urutkan Rekomendasi */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSortOpen((prev) => !prev)
+                  setIsFilterOpen(false)
+                }}
+                className={cx(
+                  't-caption h-10 px-3 rounded-lg inline-flex items-center gap-1.5 cursor-pointer transition-all border select-none',
+                  isSortOpen ? 'bg-surface border-ink text-ink font-bold' : 'bg-white border-line hover:border-neutral-400 text-ink font-medium'
+                )}
+              >
+                <span className="text-muted font-normal">Urutkan:</span>
+                <span className="font-semibold">{activeSort.label}</span>
+                <Icon name="chevDown" size={14} className={cx('transition-transform duration-200', isSortOpen && 'rotate-180')} />
+              </button>
+
+              {isSortOpen && (
+                <>
+                  <div className="fixed inset-0 z-20" onClick={() => setIsSortOpen(false)} />
+                  <div className="absolute right-0 top-full mt-1.5 w-52 bg-white rounded-xl shadow-xl border border-line py-1.5 z-30 animate-fadeIn">
+                    <div className="px-3.5 py-2 text-[11px] font-bold text-muted uppercase tracking-wider border-b border-line/60">
+                      Urutkan Produk
+                    </div>
+                    {SORT_OPTIONS.map((opt, i) => {
+                      const isSelected = i === sortIndex
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => {
+                            setSortIndex(i)
+                            setIsSortOpen(false)
+                          }}
+                          className={cx(
+                            'w-full px-3.5 py-2.5 text-left text-xs flex items-center justify-between transition-colors cursor-pointer',
+                            isSelected ? 'bg-black text-white font-bold' : 'hover:bg-surface text-ink'
+                          )}
+                        >
+                          <span>{opt.label}</span>
+                          {isSelected && <span className="text-white text-xs font-bold">✓</span>}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* 2. Dropdown Button Garis (Sliders / Filter) */}
+            <div className="relative">
+              <button
+                type="button"
+                aria-label="Filter Karakter"
+                onClick={() => {
+                  setIsFilterOpen((prev) => !prev)
+                  setIsSortOpen(false)
+                }}
+                className={cx(
+                  'w-10 h-10 rounded-lg inline-flex items-center justify-center transition-all border cursor-pointer relative select-none',
+                  isFilterOpen ? 'bg-surface border-ink text-ink' : (selectedIp ? 'bg-black text-white border-black' : 'bg-white border-line hover:border-neutral-400 text-ink')
+                )}
+              >
+                <Icon name="sliders" size={18} color="currentColor" />
+                {selectedIp && (
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-black ring-2 ring-white" />
+                )}
+              </button>
+
+              {isFilterOpen && (
+                <>
+                  <div className="fixed inset-0 z-20" onClick={() => setIsFilterOpen(false)} />
+                  <div className="absolute right-0 top-full mt-1.5 w-64 bg-white rounded-xl shadow-xl border border-line p-3 z-30 animate-fadeIn flex flex-col gap-3">
+                    <div className="flex items-center justify-between border-b border-line pb-2">
+                      <span className="text-xs font-bold text-ink">Filter Karakter IP</span>
+                      {selectedIp && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedIp(null)
+                            setIsFilterOpen(false)
+                          }}
+                          className="text-[11px] font-semibold text-muted hover:text-black underline cursor-pointer"
+                        >
+                          Reset Filter
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1 max-h-64 overflow-y-auto">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedIp(null)
+                          setIsFilterOpen(false)
+                        }}
+                        className={cx(
+                          'w-full px-3 py-2 rounded-lg text-left text-xs flex items-center justify-between transition-colors cursor-pointer',
+                          !selectedIp ? 'bg-black text-white font-bold' : 'hover:bg-surface text-ink'
+                        )}
+                      >
+                        <span>Semua Karakter</span>
+                        <span className={cx('text-[11px]', !selectedIp ? 'text-white/80' : 'text-muted')}>
+                          {LIST_KEYS.length}
+                        </span>
+                      </button>
+
+                      {Object.entries(IP).map(([k, val]) => {
+                        const isSelected = selectedIp === k
+                        const count = LIST_KEYS.filter((key) => PRODUCTS[key].ip === k).length
+                        return (
+                          <button
+                            key={k}
+                            type="button"
+                            onClick={() => {
+                              setSelectedIp(isSelected ? null : k)
+                              setIsFilterOpen(false)
+                            }}
+                            className={cx(
+                              'w-full px-3 py-2 rounded-lg text-left text-xs flex items-center justify-between transition-colors cursor-pointer',
+                              isSelected ? 'bg-black text-white font-bold' : 'hover:bg-surface text-ink'
+                            )}
+                          >
+                            <span className="flex items-center gap-2">
+                              <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: val.ink }} />
+                              {val.label}
+                            </span>
+                            <span className={cx('text-[11px]', isSelected ? 'text-white/80' : 'text-muted')}>
+                              {count}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 

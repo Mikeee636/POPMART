@@ -40,14 +40,13 @@ export default function Detail({ params }) {
       <ActionBar>
         <HeartButton id={product.cart || product.id} kind="framed" />
         <Button
-          kind="secondary"
-          className="flex-1 text-xs sm:text-sm font-bold border-[1.5px] border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 text-black dark:text-white"
+          className="flex-1 text-xs sm:text-sm font-bold bg-black text-white hover:bg-neutral-900 border-none cursor-pointer"
           onClick={handleAddToCart}
         >
           + KERANJANG
         </Button>
         <Button
-          className="flex-1 text-xs sm:text-sm font-bold bg-white text-black border border-neutral-300 shadow-md hover:bg-neutral-100 active:scale-[0.98] transition-all"
+          className="flex-1 text-xs sm:text-sm font-bold bg-black text-white hover:bg-neutral-900 border-none cursor-pointer"
           onClick={handleCheckout}
         >
           CHECKOUT
@@ -110,11 +109,10 @@ export default function Detail({ params }) {
           <div className="hidden lg:flex items-center gap-3 pt-3">
             <HeartButton id={product.cart || product.id} kind="framed" />
             <Button
-              kind="secondary"
               onClick={handleAddToCart}
-              className="flex-1 h-12 border-[1.5px] border-black text-black hover:bg-neutral-50 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+              className="flex-1 h-12 bg-black text-white hover:bg-neutral-900 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all border-none"
             >
-              <Icon name="bag" size={18} />
+              <Icon name="bag" size={18} color="#ffffff" />
               MASUKAN KE KERANJANG
             </Button>
             <Button

@@ -40,9 +40,9 @@ function CartCounter({ product }) {
           e.stopPropagation()
           addToCart(cartKey)
         }}
-        className="t-label h-9 w-full rounded-lg border-[1.5px] border-neutral-300 dark:border-neutral-600 text-black dark:text-white bg-white dark:bg-neutral-900 inline-flex items-center justify-center gap-1.5 active:opacity-70 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+        className="t-label h-9 w-full rounded-lg bg-black text-white inline-flex items-center justify-center gap-1.5 active:opacity-80 hover:bg-neutral-800 transition-colors cursor-pointer border-none font-bold"
       >
-        <Icon name="plus" size={14} />
+        <Icon name="plus" size={14} color="#ffffff" />
         Masukan ke keranjang
       </button>
     )
@@ -50,14 +50,14 @@ function CartCounter({ product }) {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="h-9 w-full rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-black inline-flex items-center justify-between border border-neutral-300 dark:border-neutral-700"
+      className="h-9 w-full rounded-lg bg-black text-white inline-flex items-center justify-between border-none"
     >
       <button type="button" aria-label="Kurang" className="w-9 h-9 inline-flex items-center justify-center cursor-pointer hover:opacity-80" onClick={() => setQty(cartKey, qty - 1)}>
-        <Icon name="minus" size={16} color="currentColor" />
+        <Icon name="minus" size={16} color="#ffffff" />
       </button>
       <span className="t-caption font-semibold">{qty} di keranjang</span>
       <button type="button" aria-label="Tambah" className="w-9 h-9 inline-flex items-center justify-center cursor-pointer hover:opacity-80" onClick={() => setQty(cartKey, qty + 1)}>
-        <Icon name="plus" size={16} color="currentColor" />
+        <Icon name="plus" size={16} color="#ffffff" />
       </button>
     </div>
   )

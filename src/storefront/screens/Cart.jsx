@@ -70,7 +70,7 @@ export default function Cart() {
         <span className="t-price-lg">{rp(finalTotal)}</span>
       </div>
       <Button
-        className="w-44 bg-white text-black font-bold border border-neutral-300 shadow-md hover:bg-neutral-100 active:scale-[0.98] transition-all"
+        className="w-44 bg-black text-white font-bold border-none hover:bg-neutral-900"
         disabled={!count}
         style={{ opacity: count ? 1 : 0.4 }}
         onClick={() => nav.go('checkout', { discountAmount, appliedPromo })}

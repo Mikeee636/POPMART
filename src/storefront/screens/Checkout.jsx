@@ -57,7 +57,7 @@ export default function Checkout({ params }) {
   const bottom = (
     <ActionBar>
       <Button
-        className="flex-1 cursor-pointer bg-white text-black font-bold border border-neutral-300 shadow-md hover:bg-neutral-100 active:scale-[0.98] transition-all"
+        className="flex-1 cursor-pointer bg-black text-white hover:bg-neutral-900 border-none font-bold"
         disabled={!summary.count}
         style={{ opacity: summary.count ? 1 : 0.4 }}
         onClick={() => {
