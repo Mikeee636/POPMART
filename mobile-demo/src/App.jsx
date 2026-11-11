@@ -8,6 +8,9 @@ import Wishlist from './screens/Wishlist'
 import Cart from './screens/Cart'
 import Checkout from './screens/Checkout'
 import Success from './screens/Success'
+import Orders from './screens/Orders'
+import Login from './screens/Login'
+import Account from './screens/Account'
 
 // Route name -> screen. Names match the prototype links of the Figma plugin.
 const SCREENS = {
@@ -19,6 +22,9 @@ const SCREENS = {
   cart: Cart,
   checkout: Checkout,
   success: Success,
+  orders: Orders,
+  login: Login,
+  account: Account,
 }
 
 function Router() {
