@@ -49,7 +49,7 @@ export default function Cart() {
   )
 
   return (
-    <Screen header={<BackHeader title={`Tas Saya (${count})`} />} bottom={bottom}>
+    <Screen narrow header={<BackHeader title={`Tas Saya (${count})`} />} bottom={bottom}>
       <div className="flex flex-col gap-6 pt-2 pb-8">
         <section className="px-4">
           {filled.map((l) => (

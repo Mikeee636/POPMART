@@ -15,21 +15,23 @@ export default function Home() {
     <Screen header={<LogoHeader />} bottom={<BottomNav active="home" />}>
       <div className="flex flex-col gap-10 pt-2 pb-8">
         {/* Hero — Sorotan Unggulan */}
-        <section className="px-4 flex flex-col gap-4">
+        <section className="px-4 flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
           <div className="relative">
-            <Thumb product={hero} className="h-80 w-full rounded-2xl" />
+            <Thumb product={hero} className="h-80 lg:h-[460px] w-full rounded-2xl" />
             <Badge kind="outline" className="absolute top-4 left-4">Sorotan Unggulan</Badge>
           </div>
+          <div className="flex flex-col gap-4 lg:gap-6">
           <div className="flex flex-col gap-2">
             <p className="t-caption text-muted">Toko Online Resmi POP MART</p>
-            <h2 className="t-display">Hirono Shelter Series Figures</h2>
+            <h2 className="t-display lg:text-[44px] lg:leading-[52px]">Hirono Shelter Series Figures</h2>
           </div>
-          <Button onClick={() => nav.go('detail', { id: hero.id })}>BELI SEKARANG</Button>
+          <Button className="lg:w-60" onClick={() => nav.go('detail', { id: hero.id })}>BELI SEKARANG</Button>
           <div className="flex items-center gap-1.5" aria-hidden="true">
             <span className="w-5 h-1.5 rounded-full bg-ink" />
             {[0, 1, 2].map((i) => (
               <span key={i} className="w-1.5 h-1.5 rounded-full bg-line" />
             ))}
+          </div>
           </div>
         </section>
 
@@ -60,7 +62,7 @@ export default function Home() {
         {/* Kategori Produk */}
         <section className="px-4 flex flex-col gap-4">
           <SectionHead title="KATEGORI PRODUK" />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {CATEGORIES.map(([label, ic]) => (
               <button key={label} type="button" onClick={() => nav.tab('list')} className="h-28 p-4 rounded-xl bg-surface flex flex-col justify-between items-start text-left">
                 <Icon name={ic} size={28} />
@@ -71,7 +73,7 @@ export default function Home() {
         </section>
 
         {/* MEGA */}
-        <section className="bg-ink px-4 py-8 flex flex-col gap-5">
+        <section className="bg-ink px-4 py-8 lg:mx-4 lg:rounded-2xl lg:px-10 lg:py-10 flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
             <h2 className="t-display text-white">MEGA</h2>
             <p className="t-body text-ondark">Figur koleksi ukuran besar 400% sampai 1000%.</p>
@@ -103,7 +105,7 @@ export default function Home() {
         </section>
 
         {/* Komunitas */}
-        <section className="bg-surface px-4 py-7 flex flex-col gap-3">
+        <section className="bg-surface px-4 py-7 lg:mx-4 lg:rounded-2xl lg:px-10 lg:py-10 flex flex-col gap-3 lg:max-w-[640px] lg:self-center lg:w-full">
           <h2 className="t-title">GABUNG DENGAN KOMUNITAS</h2>
           <p className="t-body text-ink2">Jadilah yang pertama mendapatkan rilis terbaru, penawaran eksklusif, dan banyak lagi.</p>
           <div className="h-1" />

@@ -62,8 +62,8 @@ export default function Orders({ params }) {
   const tab = params?.tab || 'unpaid'
   const orders = ORDERS[tab]
 
-  const tabs = (
-    <div className="flex gap-2 px-4 pt-1 pb-3 overflow-x-auto no-scrollbar">
+  const tabs = (cls) => (
+    <div className={`flex gap-2 px-4 overflow-x-auto no-scrollbar ${cls}`}>
       {ORDER_TABS.map(([k, label]) => (
         <Chip key={k} active={k === tab} onClick={() => k !== tab && nav.swap('orders', { tab: k })}>
           {label}
@@ -73,8 +73,10 @@ export default function Orders({ params }) {
   )
 
   return (
-    <Screen header={<BackHeader title="Pesanan Saya">{tabs}</BackHeader>}>
+    <Screen narrow header={<BackHeader title="Pesanan Saya">{tabs('pt-1 pb-3 lg:hidden')}</BackHeader>}>
+      <h1 className="hidden lg:block t-display px-4 pt-4">Pesanan Saya</h1>
       <div className="flex flex-col gap-4 px-4 pt-4 pb-8">
+        <div className="hidden lg:flex -mx-4">{tabs('pb-1')}</div>
         <span className="t-caption text-muted">{orders.length} pesanan</span>
         {orders.map((o) => (
           <OrderCard key={o.no} order={o} />

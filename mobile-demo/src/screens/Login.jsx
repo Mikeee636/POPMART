@@ -6,7 +6,7 @@ export default function Login() {
   const { nav, notify } = useShop()
   const demo = () => notify('Demo: tombol ini hanya tampilan')
   return (
-    <Screen header={<BackHeader title="" />}>
+    <Screen narrow header={<BackHeader title="" />}>
       <form
         onSubmit={(e) => {
           e.preventDefault()

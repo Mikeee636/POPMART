@@ -93,5 +93,5 @@ export default function ProductCard({ product, onOpen, className }) {
 }
 
 export function ProductGrid({ children, className }) {
-  return <div className={cx('grid grid-cols-2 gap-x-4 gap-y-6', className)}>{children}</div>
+  return <div className={cx('grid grid-cols-2 lg:grid-cols-4 gap-x-4 lg:gap-x-6 gap-y-6 lg:gap-y-8', className)}>{children}</div>
 }

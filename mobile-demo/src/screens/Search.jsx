@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useShop } from '../context/ShopContext'
-import { Screen, StatusBar } from '../components/Layout'
+import { Screen } from '../components/Layout'
 import Icon from '../components/Icon'
 import ProductCard, { ProductGrid } from '../components/ProductCard'
 import WishStrip from '../components/WishStrip'
@@ -16,8 +16,7 @@ export default function Search() {
   const results = q ? Object.values(PRODUCTS).filter((p) => p.name.toLowerCase().includes(q)) : []
 
   const header = (
-    <header className="shrink-0 bg-white border-b border-line z-10">
-      <StatusBar />
+    <header className="lg:hidden shrink-0 bg-white border-b border-line z-10 pt-[env(safe-area-inset-top,0px)]">
       <div className="h-[60px] py-2 pl-4 pr-2 flex items-center gap-2">
         <label className="flex-1 flex items-center gap-2.5 h-11 px-3.5 rounded-[10px] bg-surface">
           <Icon name="search" size={20} />
@@ -38,6 +37,12 @@ export default function Search() {
   return (
     <Screen header={header}>
       <div className="flex flex-col gap-8 pt-4 pb-8">
+        <div className="hidden lg:flex px-4">
+          <label className="flex-1 flex items-center gap-2.5 h-12 px-4 rounded-[10px] bg-surface">
+            <Icon name="search" size={20} />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari produk…" className="t-body flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted" />
+          </label>
+        </div>
         <section className="px-4 flex flex-col gap-3">
           <h2 className="t-heading">Pencarian Populer</h2>
           <div className="flex flex-wrap gap-2">

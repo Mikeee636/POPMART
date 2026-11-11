@@ -39,7 +39,7 @@ export default function Checkout() {
   )
 
   return (
-    <Screen header={<BackHeader title="Checkout" />} bottom={bottom}>
+    <Screen narrow header={<BackHeader title="Checkout" />} bottom={bottom}>
       <div className="flex flex-col gap-7 pt-2 pb-8">
         <section className="px-4 flex flex-col gap-3">
           <h2 className="t-heading">Alamat Pengiriman</h2>

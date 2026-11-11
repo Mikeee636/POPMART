@@ -41,9 +41,10 @@ export default function Detail({ params }) {
   return (
     <Screen header={<BackHeader title="Detail Produk" cart />} bottom={bottom}>
       <div className="flex flex-col gap-6 pb-8">
+       <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-10 lg:items-start lg:px-4">
         {/* Gallery */}
         <div className="flex flex-col items-center gap-3">
-          <Thumb product={product} className="aspect-square w-full" textClass="t-title" />
+          <Thumb product={product} className="aspect-square w-full lg:rounded-2xl" textClass="t-title" />
           <div className="flex items-center gap-1.5" aria-hidden="true">
             <span className="w-5 h-1.5 rounded-full bg-ink" />
             {[0, 1, 2, 3].map((i) => (
@@ -52,6 +53,7 @@ export default function Detail({ params }) {
           </div>
         </div>
 
+        <div className="flex flex-col gap-6">
         {/* Info */}
         <section className="px-4 flex flex-col gap-3">
           <div className="flex flex-wrap gap-2">
@@ -112,6 +114,8 @@ export default function Detail({ params }) {
           </div>
         </section>
 
+        </div>
+       </div>
         {/* Rekomendasi */}
         <section className="flex flex-col gap-3">
           <div className="px-4">

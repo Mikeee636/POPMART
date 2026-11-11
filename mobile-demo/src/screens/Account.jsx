@@ -9,7 +9,7 @@ export default function Account() {
   const demo = () => notify('Demo: menu ini hanya tampilan')
 
   return (
-    <Screen header={<TitleHeader title="Saya" actions={['help', 'cart']} />} bottom={<BottomNav active="account" />}>
+    <Screen narrow header={<TitleHeader title="Saya" actions={['help', 'cart']} />} bottom={<BottomNav active="account" />}>
       <div className="flex flex-col gap-7 pt-4 pb-8">
         <section className="px-4 flex items-center gap-3.5">
           <span className="w-16 h-16 rounded-full bg-surface flex items-center justify-center t-heading">RP</span>

@@ -12,7 +12,7 @@ npm run dev      # http://localhost:5174
 npm run build
 ```
 
-On a phone (or viewport < 640px) the app fills the screen. On desktop it is shown inside a 390x844 device frame.
+Two layouts only, no tablet layout: below 1024px the mobile app layout (max 480px column, bottom nav, safe-area padding); from 1024px a web layout (top navbar, centered content, 4-column grids).
 
 ## Screens (11, same names as the Figma prototype)
 

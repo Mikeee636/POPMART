@@ -2,34 +2,14 @@ import { useShop } from '../context/ShopContext'
 import Icon from './Icon'
 import { IconBtn, CountDot, cx } from './ui'
 
-// Decorative iOS status bar + home indicator: only shown inside the desktop phone frame.
-export function StatusBar() {
-  return (
-    <div className="hidden sm:flex h-[47px] px-7 items-center justify-between shrink-0">
-      <span className="t-strong">9:41</span>
-      <svg width="67" height="12" viewBox="0 0 67 12" fill="none" aria-hidden="true">
-        <rect x="0" y="8" width="3" height="4" rx="1" fill="#111" />
-        <rect x="5" y="6" width="3" height="6" rx="1" fill="#111" />
-        <rect x="10" y="4" width="3" height="8" rx="1" fill="#111" />
-        <rect x="15" y="2" width="3" height="10" rx="1" fill="#111" />
-        <path d="M24 4.5a11 11 0 0 1 15 0" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-        <path d="M26.6 7.3a7 7 0 0 1 9.8 0" stroke="#111" strokeWidth="1.6" strokeLinecap="round" />
-        <circle cx="31.5" cy="10.3" r="1.3" fill="#111" />
-        <rect x="42.5" y="0.5" width="21" height="11" rx="3" stroke="#111" strokeOpacity="0.4" />
-        <rect x="44.5" y="2.5" width="17" height="7" rx="1.5" fill="#111" />
-        <rect x="64.5" y="4" width="1.5" height="4" rx="0.75" fill="#111" fillOpacity="0.4" />
-      </svg>
-    </div>
-  )
-}
+/*
+  Two layouts only (no tablet layout):
+  - below lg (1024px): mobile app layout (header, scroll body, bottom bar), capped to a 480px column
+  - lg and up: web layout (top navbar, centered content, no bottom nav)
+*/
 
-export function HomeIndicator() {
-  return (
-    <div className="hidden sm:flex h-7 items-center justify-center">
-      <div className="w-[134px] h-[5px] rounded-full bg-ink" />
-    </div>
-  )
-}
+// Bottom padding that clears the iPhone home indicator / Android gesture bar, plus a little breathing room.
+const SAFE_BOTTOM = 'pb-[calc(env(safe-area-inset-bottom,0px)+14px)] lg:pb-3'
 
 export function WishButton() {
   const { nav, wishCount } = useShop()
@@ -49,13 +29,10 @@ export function BagButton() {
   )
 }
 
+// ---------- mobile headers (hidden on desktop) ----------
+
 function HeaderShell({ children }) {
-  return (
-    <header className="shrink-0 bg-white border-b border-line z-10">
-      <StatusBar />
-      {children}
-    </header>
-  )
+  return <header className="lg:hidden shrink-0 bg-white border-b border-line z-10 pt-[env(safe-area-inset-top,0px)]">{children}</header>
 }
 
 export function LogoHeader() {
@@ -109,6 +86,8 @@ export function BackHeader({ title, cart, close, onBack, children }) {
   )
 }
 
+// ---------- mobile bottom bars ----------
+
 const TABS = [
   ['Beranda', 'home', 'home'],
   ['Kategori', 'grid', 'list'],
@@ -117,40 +96,103 @@ const TABS = [
 ]
 
 export function BottomNav({ active }) {
-  const { nav } = useShop()
+  const { nav, summary } = useShop()
   return (
-    <nav className="shrink-0 bg-white border-t border-line z-10">
-      <div className="h-[58px] px-2 pt-2 flex">
+    <nav className={cx('lg:hidden shrink-0 bg-white border-t border-line z-10 pt-2', SAFE_BOTTOM)}>
+      <div className="h-[50px] px-2 flex">
         {TABS.map(([label, ic, target]) => {
           const on = target === active
           return (
-            <button key={target} type="button" onClick={() => !on && nav.tab(target)} className="flex-1 flex flex-col items-center gap-1" aria-current={on ? 'page' : undefined}>
-              <Icon name={ic} size={24} color={on ? '#111' : '#6B6B6B'} sw={on ? 2.2 : 1.75} />
+            <button key={target} type="button" onClick={() => !on && nav.tab(target)} className="relative flex-1 flex flex-col items-center gap-1" aria-current={on ? 'page' : undefined}>
+              <span className="relative">
+                <Icon name={ic} size={24} color={on ? '#111' : '#6B6B6B'} sw={on ? 2.2 : 1.75} />
+                {target === 'cart' && summary.count > 0 && <CountDot value={summary.count} className="-top-1 left-4" />}
+              </span>
               <span className={cx(on ? 't-nav-active text-ink' : 't-nav text-muted')}>{label}</span>
             </button>
           )
         })}
       </div>
-      <HomeIndicator />
     </nav>
   )
 }
 
 export function ActionBar({ children }) {
   return (
-    <div className="shrink-0 bg-white shadow-bar z-10">
-      <div className="flex items-center gap-3 px-4 pt-3 pb-1">{children}</div>
-      <HomeIndicator />
+    <div className={cx('shrink-0 bg-white shadow-bar z-10 pt-3', SAFE_BOTTOM)}>
+      <div className="flex items-center gap-3 px-4 w-full lg:max-w-[640px] lg:mx-auto">{children}</div>
     </div>
   )
 }
 
-// Fixed header + scrolling body + fixed bottom bar.
-export function Screen({ header, bottom, children, className }) {
+// ---------- desktop navbar (hidden below lg) ----------
+
+const DESKTOP_LINKS = [
+  ['Beranda', 'home'],
+  ['Kategori', 'list'],
+  ['Pesanan Saya', 'orders'],
+  ['Akun', 'account'],
+]
+
+function DesktopNav() {
+  const { stack, nav } = useShop()
+  const current = stack[stack.length - 1].name
+  const go = (name) => (name === 'orders' ? nav.go('orders', { tab: 'unpaid' }) : nav.tab(name))
+  return (
+    <header className="hidden lg:block shrink-0 bg-white border-b border-line z-20">
+      <div className="mx-auto max-w-[1120px] h-[72px] px-8 flex items-center gap-8">
+        <button type="button" onClick={() => nav.tab('home')} aria-label="POP MART">
+          <img src="./images/logo-wordmark.png" alt="POP MART" className="h-8 w-auto" />
+        </button>
+        <nav className="flex items-center gap-1">
+          {DESKTOP_LINKS.map(([label, name]) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => go(name)}
+              className={cx('t-strong px-3 h-10 rounded-lg hover:bg-surface', current === name ? 'text-ink underline underline-offset-[10px] decoration-2' : 'text-ink2')}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+        <button
+          type="button"
+          onClick={() => nav.go('search')}
+          className="ml-auto flex items-center gap-2.5 h-11 w-72 px-3.5 rounded-[10px] bg-surface text-left"
+        >
+          <Icon name="search" size={20} />
+          <span className="t-body text-muted">Cari produk…</span>
+        </button>
+        <div className="flex items-center">
+          <WishButton />
+          <BagButton />
+        </div>
+      </div>
+    </header>
+  )
+}
+
+// ---------- screen shell ----------
+
+// narrow = single centered column on desktop (forms, cart, orders); otherwise full 1120px content width.
+export function Screen({ header, bottom, children, className, narrow }) {
+  const { stack, nav } = useShop()
   return (
     <div className="screen-enter h-full flex flex-col bg-white">
+      <DesktopNav />
       {header}
-      <main className={cx('flex-1 overflow-y-auto overflow-x-hidden no-scrollbar', className)}>{children}</main>
+      <main className={cx('flex-1 overflow-y-auto overflow-x-hidden no-scrollbar')}>
+        <div className={cx('mx-auto w-full', narrow ? 'lg:max-w-[640px]' : 'lg:max-w-[1120px] lg:px-4', className)}>
+          {stack.length > 1 && (
+            <button type="button" onClick={nav.back} className="hidden lg:inline-flex items-center gap-1 t-caption text-ink2 h-10 mt-4 mb-1 px-4">
+              <Icon name="back" size={16} color="#3A3A3A" />
+              Kembali
+            </button>
+          )}
+          {children}
+        </div>
+      </main>
       {bottom}
     </div>
   )
@@ -160,17 +202,17 @@ export function Toast() {
   const { toast } = useShop()
   if (!toast) return null
   return (
-    <div role="status" className="toast-enter t-caption absolute left-1/2 bottom-24 z-50 bg-ink text-white px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap">
+    <div role="status" className="toast-enter t-caption absolute left-1/2 bottom-28 lg:bottom-10 z-50 bg-ink text-white px-4 py-2.5 rounded-full shadow-lg whitespace-nowrap">
       {toast}
     </div>
   )
 }
 
-// Phone-sized column on mobile; framed device on desktop.
+// Phone column (max 480px) below lg, full-width web page on lg+.
 export function Frame({ children }) {
   return (
-    <div className="min-h-full flex items-center justify-center bg-surface sm:bg-[#E9E7E2] sm:p-6">
-      <div className="relative w-full h-[100dvh] sm:w-[390px] sm:h-[844px] sm:max-h-[calc(100dvh-48px)] bg-white overflow-hidden sm:rounded-[44px] sm:ring-[10px] sm:ring-ink sm:shadow-2xl">
+    <div className="h-[100dvh] bg-surface">
+      <div className="relative h-full w-full max-w-[480px] lg:max-w-none mx-auto bg-white overflow-hidden shadow-[0_0_0_1px_#E7E5E1] lg:shadow-none">
         {children}
       </div>
     </div>
