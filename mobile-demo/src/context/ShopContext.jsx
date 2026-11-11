@@ -59,6 +59,6 @@ export function ShopProvider({ children }) {
 
   const wishCount = Object.values(wish).filter(Boolean).length
 
-  const value = { stack, nav, cart, setQty, addToCart, wish, toggleWish, wishCount, summary, toast }
+  const value = { stack, nav, cart, setQty, addToCart, wish, toggleWish, wishCount, summary, toast, notify: flash }
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>
 }
