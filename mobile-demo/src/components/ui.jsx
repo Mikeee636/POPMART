@@ -1,0 +1,198 @@
+import Icon from './Icon'
+import { IP } from '../data/catalog'
+
+export const cx = (...a) => a.filter(Boolean).join(' ')
+
+export function Button({ kind = 'primary', children, className, ...rest }) {
+  return (
+    <button
+      type="button"
+      className={cx(
+        't-button h-[52px] px-5 rounded-[10px] inline-flex items-center justify-center gap-2 transition-opacity active:opacity-80',
+        kind === 'primary' ? 'bg-ink text-white' : 'bg-white text-ink border-[1.5px] border-ink',
+        className,
+      )}
+      {...rest}
+    >
+      {children}
+    </button>
+  )
+}
+
+export function IconBtn({ name, size = 44, iconSize = 24, color, sw, label, className, children, ...rest }) {
+  return (
+    <button
+      type="button"
+      aria-label={label || name}
+      style={{ width: size, height: size }}
+      className={cx('relative inline-flex items-center justify-center shrink-0', className)}
+      {...rest}
+    >
+      <Icon name={name} size={iconSize} color={color} sw={sw} />
+      {children}
+    </button>
+  )
+}
+
+export function CountDot({ value, className }) {
+  return (
+    <span className={cx('t-label absolute min-w-4 h-4 px-1 rounded-full bg-pm text-white inline-flex items-center justify-center', className)}>
+      {value}
+    </span>
+  )
+}
+
+const BADGES = {
+  red: 'bg-pm text-white',
+  ink: 'bg-ink text-white',
+  outline: 'bg-white text-ink border border-ink',
+  soft: 'bg-surface text-ink2',
+}
+export function Badge({ kind = 'ink', children, className }) {
+  return <span className={cx('t-label inline-flex items-center px-2 py-1 rounded', BADGES[kind], className)}>{children}</span>
+}
+
+export function Chip({ active, icon, children, ...rest }) {
+  return (
+    <button
+      type="button"
+      className={cx(
+        't-caption inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full whitespace-nowrap shrink-0',
+        active ? 'bg-ink text-white' : 'bg-white text-ink border border-line',
+      )}
+      {...rest}
+    >
+      {icon && <Icon name={icon} size={16} color={active ? '#fff' : '#111'} />}
+      {children}
+    </button>
+  )
+}
+
+export function Divider({ dark, className }) {
+  return <div className={cx('h-px w-full', dark ? 'bg-darkline' : 'bg-line', className)} />
+}
+
+export function SectionHead({ title, link, sub, onLink, className }) {
+  return (
+    <div className={cx('flex flex-col gap-1', className)}>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="t-title flex-1">{title}</h2>
+        {link && (
+          <button type="button" onClick={onLink} className="t-caption text-ink2 inline-flex items-center gap-0.5 h-8">
+            {link}
+            <Icon name="chevRight" size={16} color="#3A3A3A" />
+          </button>
+        )}
+      </div>
+      {sub && <p className="t-body text-muted">{sub}</p>}
+    </div>
+  )
+}
+
+// Horizontal scroller that bleeds to the screen edges.
+export function HScroll({ children, gap = 12, className }) {
+  return (
+    <div className={cx('flex overflow-x-auto no-scrollbar px-4', className)} style={{ gap }}>
+      {children}
+    </div>
+  )
+}
+
+export function Field({ label, icon, focus, ...rest }) {
+  return (
+    <label className="flex flex-col gap-2">
+      {label && <span className="t-caption text-ink2">{label}</span>}
+      <span
+        className={cx(
+          'flex items-center gap-3 h-[52px] px-4 rounded-[10px] bg-white',
+          focus ? 'border-[1.5px] border-ink' : 'border border-line focus-within:border-ink',
+        )}
+      >
+        <input className="t-body flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted" {...rest} />
+        {icon && <Icon name={icon} size={20} color="#6B6B6B" />}
+      </span>
+    </label>
+  )
+}
+
+export function Stepper({ qty, onMinus, onPlus, size = 32 }) {
+  return (
+    <div className="inline-flex items-center rounded-lg border border-line" style={{ height: size }}>
+      <IconBtn name="minus" size={size} iconSize={16} label="Kurang" onClick={onMinus} />
+      <span className="t-strong w-7 text-center">{qty}</span>
+      <IconBtn name="plus" size={size} iconSize={16} label="Tambah" onClick={onPlus} />
+    </div>
+  )
+}
+
+export function SummaryRow({ label, value, strong }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className={strong ? 't-heading' : 't-body text-ink2'}>{label}</span>
+      <span className={strong ? 't-heading' : 't-strong'}>{value}</span>
+    </div>
+  )
+}
+
+export function InfoRow({ icon, title, sub }) {
+  return (
+    <div className="flex items-center gap-3 py-1">
+      <Icon name={icon} size={22} />
+      <div className="flex-1 flex flex-col gap-0.5">
+        <span className="t-strong">{title}</span>
+        {sub && <span className="t-caption text-muted">{sub}</span>}
+      </div>
+    </div>
+  )
+}
+
+export function ListRow({ icon, label, value, danger, last, onClick }) {
+  return (
+    <>
+      <button type="button" onClick={onClick} className="flex items-center gap-3 h-14 w-full text-left">
+        <Icon name={icon} size={22} color={danger ? '#D2001E' : '#111'} />
+        <span className={cx('t-strong flex-1', danger && 'text-pm')}>{label}</span>
+        {value && <span className="t-caption text-muted">{value}</span>}
+        {!danger && <Icon name="chevRight" size={18} color="#6B6B6B" />}
+      </button>
+      {!last && <Divider />}
+    </>
+  )
+}
+
+export function RadioOption({ title, sub, value, on, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cx('flex items-center gap-3 px-4 py-3.5 rounded-xl bg-white text-left w-full', on ? 'border-[1.5px] border-ink' : 'border border-line')}
+    >
+      <span className={cx('w-5 h-5 rounded-full bg-white inline-flex items-center justify-center shrink-0 border-[1.5px]', on ? 'border-ink' : 'border-muted')}>
+        {on && <span className="w-2.5 h-2.5 rounded-full bg-ink" />}
+      </span>
+      <span className="flex-1 flex flex-col gap-0.5">
+        <span className="t-strong">{title}</span>
+        {sub && <span className="t-caption text-muted">{sub}</span>}
+      </span>
+      {value && <span className="t-strong">{value}</span>}
+    </button>
+  )
+}
+
+// Product photo, or a tinted IP placeholder when no photo exists (as in the Figma mockup).
+export function Thumb({ product, className, text = true, textClass = 't-label' }) {
+  const ip = IP[product.ip]
+  return (
+    <div className={cx('relative overflow-hidden flex items-center justify-center p-2 text-center', className)} style={{ background: ip.tint }}>
+      {product.img ? (
+        <img src={product.img} alt={product.name} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+      ) : (
+        text && (
+          <span className={textClass} style={{ color: ip.ink }}>
+            {ip.label}
+          </span>
+        )
+      )}
+    </div>
+  )
+}
