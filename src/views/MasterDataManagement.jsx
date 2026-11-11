@@ -74,13 +74,21 @@ export const MasterDataManagement = () => {
                     <img
                       src={ip.avatar}
                       alt={ip.name}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        if (e.currentTarget.nextElementSibling) {
+                          e.currentTarget.nextElementSibling.style.display = 'flex';
+                        }
+                      }}
                       className="w-14 h-14 rounded-xl object-cover border border-zinc-200 dark:border-zinc-700 shadow-sm flex-shrink-0"
                     />
-                  ) : (
-                    <div className="w-14 h-14 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center font-black text-lg flex-shrink-0 shadow-sm uppercase select-none">
-                      {ip.name?.trim().charAt(0) || 'I'}
-                    </div>
-                  )}
+                  ) : null}
+                  <div
+                    style={{ display: ip.avatar ? 'none' : 'flex' }}
+                    className="w-14 h-14 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 border border-zinc-200 dark:border-zinc-700 items-center justify-center font-black text-xl flex-shrink-0 shadow-sm uppercase select-none"
+                  >
+                    {ip.name?.trim().charAt(0) || 'K'}
+                  </div>
                   <div className="min-w-0">
                     <h4 className="font-extrabold text-zinc-950 dark:text-white text-base truncate">
                       {ip.name}

@@ -10,11 +10,22 @@ import { ProductManagement } from './views/ProductManagement';
 import { UserManagement } from './views/UserManagement';
 import { OrderManagement } from './views/OrderManagement';
 import { MasterDataManagement } from './views/MasterDataManagement';
+import { AuthPage } from './views/AuthPage';
 
 const DashboardContent = () => {
-  const { activeTab } = useStore();
+  const { activeTab, isAuthenticated, adminUser } = useStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Jika belum login atau bukan role Admin, wajib berada di halaman Login
+  if (!isAuthenticated || adminUser?.role?.toLowerCase() !== 'admin') {
+    return (
+      <>
+        <AuthPage />
+        <Toast />
+      </>
+    );
+  }
 
   const renderActiveView = () => {
     switch (activeTab) {

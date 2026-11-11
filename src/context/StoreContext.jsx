@@ -15,11 +15,19 @@ const STORAGE_KEYS = {
   PRODUCTS: 'popmart_react_products',
   USERS: 'popmart_react_users',
   ORDERS: 'popmart_react_orders',
-  THEME: 'popmart_react_theme'
+  THEME: 'popmart_react_theme',
+  ADMIN: 'popmart_react_admin_user'
+};
+
+const DEFAULT_ADMIN = {
+  name: 'Admin Pop Mart',
+  email: 'admin@popmart.co.id',
+  role: 'Admin',
+  avatar: ''
 };
 
 const DATASET_VERSION_KEY = 'popmart_dataset_version';
-const CURRENT_DATASET_VERSION = 'v2026_strict_skullpanda_hirono_v2';
+const CURRENT_DATASET_VERSION = 'v2026_dataset_zip_all_ips_and_products_v10';
 
 // Helper for safe JSON parse from localStorage
 const safeParse = (key, fallback) => {
@@ -46,6 +54,7 @@ if (typeof window !== 'undefined') {
       localStorage.removeItem(STORAGE_KEYS.PRODUCTS);
       localStorage.removeItem(STORAGE_KEYS.USERS);
       localStorage.removeItem(STORAGE_KEYS.ORDERS);
+      localStorage.removeItem(STORAGE_KEYS.ADMIN);
       localStorage.setItem(DATASET_VERSION_KEY, CURRENT_DATASET_VERSION);
     }
   } catch (err) {
@@ -106,6 +115,129 @@ export const StoreProvider = ({ children }) => {
 
   // Core Data: Orders
   const [orders, setOrders] = useState(() => safeParse(STORAGE_KEYS.ORDERS, DEFAULT_ORDERS));
+
+  // Current Admin Profile & Auth
+  const [adminUser, setAdminUser] = useState(() => safeParse(STORAGE_KEYS.ADMIN, DEFAULT_ADMIN));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      const savedAuth = localStorage.getItem('popmart_react_is_authenticated');
+      return savedAuth !== null ? JSON.parse(savedAuth) : true;
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.ADMIN, JSON.stringify(adminUser));
+    } catch (e) {
+      console.warn('Failed to save admin profile:', e);
+    }
+  }, [adminUser]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('popmart_react_is_authenticated', JSON.stringify(isAuthenticated));
+    } catch (e) {
+      console.warn('Failed to save auth status:', e);
+    }
+  }, [isAuthenticated]);
+
+  const updateAdminProfile = (updated) => {
+    setAdminUser(prev => ({ ...prev, ...updated }));
+    showToast('Profil admin berhasil diperbarui!');
+  };
+
+  const logoutAdmin = () => {
+    setIsAuthenticated(false);
+    showToast('Anda telah keluar dari sesi admin.', 'info');
+  };
+
+  const loginAdmin = (user = adminUser || DEFAULT_ADMIN) => {
+    const inputEmail = (user.email || '').trim().toLowerCase();
+    const foundUser = users.find(u => u.email?.toLowerCase() === inputEmail);
+
+    let finalData = null;
+    if (foundUser) {
+      finalData = {
+        name: foundUser.name,
+        email: foundUser.email,
+        role: foundUser.role?.toLowerCase() === 'admin' ? 'Admin' : 'Customer',
+        avatar: foundUser.avatar || ''
+      };
+    } else if (inputEmail === 'admin@popmart.co.id' || inputEmail === 'michael@popmart.co.id') {
+      finalData = {
+        name: inputEmail === 'admin@popmart.co.id' ? 'Admin Pop Mart' : (user.name || 'Admin'),
+        email: inputEmail,
+        role: 'Admin',
+        avatar: user.avatar || ''
+      };
+    } else if (inputEmail === 'mikel@popmart.com' || inputEmail === 'customer@popmart.co.id' || inputEmail === 'sarah.wijaya@gmail.com') {
+      finalData = {
+        name: 'Mikel',
+        email: inputEmail,
+        role: 'Customer',
+        avatar: ''
+      };
+    } else if (user.role) {
+      finalData = {
+        name: user.name || 'User',
+        email: inputEmail || 'user@popmart.co.id',
+        role: user.role?.toLowerCase() === 'admin' ? 'Admin' : 'Customer',
+        avatar: user.avatar || ''
+      };
+    } else {
+      finalData = {
+        name: user.name || 'Customer',
+        email: inputEmail || 'customer@popmart.co.id',
+        role: 'Customer',
+        avatar: ''
+      };
+    }
+
+    // HANYA ROLE ADMIN YANG DAPAT MASUK KE DASHBOARD ADMIN
+    if (finalData.role !== 'Admin') {
+      showToast('Akses ditolak! Hanya akun dengan role Admin yang dapat masuk ke dashboard admin.', 'error');
+      setIsAuthenticated(false);
+      return false;
+    }
+
+    setAdminUser(finalData);
+    setIsAuthenticated(true);
+    showToast(`Selamat datang, ${finalData.name}! Akses Admin terverifikasi.`);
+    return true;
+  };
+
+  const registerAdmin = (newUser) => {
+    const adminData = {
+      name: newUser.name || 'Admin',
+      email: newUser.email || 'admin@popmart.co.id',
+      role: newUser.role === 'Customer' ? 'Customer' : 'Admin',
+      avatar: newUser.avatar || ''
+    };
+
+    // Daftarkan ke daftar pengguna jika belum ada
+    const existing = users.find(u => u.email.toLowerCase() === adminData.email.toLowerCase());
+    if (!existing) {
+      const createdUser = {
+        id: `u-${Date.now()}`,
+        name: adminData.name,
+        email: adminData.email,
+        role: adminData.role,
+        avatar: adminData.avatar,
+        status: 'active',
+        totalOrders: 0,
+        totalSpent: 0,
+        registeredAt: new Date().toISOString().split('T')[0]
+      };
+      setUsers(prev => [createdUser, ...prev]);
+    }
+
+    setAdminUser(adminData);
+    // Tidak langsung login agar redirect ke halaman login
+    setIsAuthenticated(false);
+    showToast(`Registrasi berhasil! Silakan masuk dengan akun Anda.`);
+  };
 
   // Sync to LocalStorage
   useEffect(() => {
@@ -400,7 +532,13 @@ export const StoreProvider = ({ children }) => {
         saveCategory,
         deleteCategory,
         saveIP,
-        deleteIP
+        deleteIP,
+        adminUser,
+        updateAdminProfile,
+        logoutAdmin,
+        loginAdmin,
+        registerAdmin,
+        isAuthenticated
       }}
     >
       {children}

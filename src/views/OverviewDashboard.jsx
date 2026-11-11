@@ -30,7 +30,7 @@ import { OrderModal } from '../components/modals/OrderModal';
 const MONO_SHADES = ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#d4d4d8', '#52525b'];
 
 export const OverviewDashboard = () => {
-  const { analytics, orders, products, ips, updateStock, setActiveTab, theme } = useStore();
+  const { analytics, orders, products, ips, updateStock, setActiveTab, theme, adminUser } = useStore();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
@@ -65,7 +65,7 @@ export const OverviewDashboard = () => {
       icon: ShoppingBag
     },
     {
-      label: 'Total Kolektor Terdaftar',
+      label: 'Total Pengguna Terdaftar',
       value: `${analytics.activeUsers} Pengguna`,
       growth: '3 Member Platinum',
       icon: Users
@@ -88,7 +88,7 @@ export const OverviewDashboard = () => {
       <div className="relative rounded-3xl overflow-hidden bg-zinc-950 text-white p-6 sm:p-8 border border-zinc-800 shadow-xl">
         <div className="relative z-10 max-w-2xl">
           <h2 className="text-xl sm:text-3xl font-black tracking-tight">
-            Hi Michael!
+            Hi {adminUser?.name || 'Michael'}!
           </h2>
           <p className="mt-2 text-zinc-400 text-xs sm:text-sm leading-relaxed">
             Selamat datang kembali! Pantau arus transaksi hari ini dan pastikan data katalog produk selalu diperbarui

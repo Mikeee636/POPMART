@@ -77,7 +77,7 @@ export const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
                   <img
                     src="/popmart-logo.png"
                     alt="POP MART"
-                    className="h-9 w-auto max-w-[155px] object-contain block rounded-sm shadow-sm"
+                    className="h-9 w-auto max-w-[155px] object-contain block"
                   />
                 </div>
 

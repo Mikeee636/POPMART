@@ -12,8 +12,7 @@ import {
   ShieldAlert,
   UserX,
   UserCheck,
-  Award,
-  Crown
+  Award
 } from 'lucide-react';
 import { formatIDR } from '../utils/formatters';
 import { UserModal } from '../components/modals/UserModal';
@@ -25,7 +24,6 @@ export const UserManagement = () => {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [tierFilter, setTierFilter] = useState('all');
 
   // Modals state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,14 +38,12 @@ export const UserManagement = () => {
         u.name.toLowerCase().includes(search.toLowerCase()) ||
         u.email.toLowerCase().includes(search.toLowerCase()) ||
         (u.phone && u.phone.includes(search));
-      const matchRole = roleFilter === 'all' || u.role === roleFilter;
+      const matchRole = roleFilter === 'all' || u.role?.toLowerCase() === roleFilter.toLowerCase();
       const matchStatus = statusFilter === 'all' || u.status === statusFilter;
-      const matchTier =
-        tierFilter === 'all' || (u.tier && u.tier.toLowerCase().includes(tierFilter.toLowerCase()));
 
-      return matchSearch && matchRole && matchStatus && matchTier;
+      return matchSearch && matchRole && matchStatus;
     });
-  }, [users, search, roleFilter, statusFilter, tierFilter]);
+  }, [users, search, roleFilter, statusFilter]);
 
   const handleOpenAdd = () => {
     setSelectedUserForEdit(null);
@@ -72,7 +68,6 @@ export const UserManagement = () => {
 
   const roleBadges = {
     admin: 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900',
-    staff: 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700',
     customer: 'bg-zinc-50 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800'
   };
 
@@ -112,13 +107,13 @@ export const UserManagement = () => {
         <div className="p-4 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-sm">
           <div className="text-[11px] font-semibold text-zinc-400">Pelanggan Aktif</div>
           <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 mt-1">
-            {users.filter(u => u.status === 'active' && u.role === 'customer').length} Kolektor
+            {users.filter(u => u.status === 'active' && u.role?.toLowerCase() === 'customer').length} Customer
           </div>
         </div>
         <div className="p-4 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <div className="text-[11px] font-semibold text-zinc-400">VIP Platinum Tier</div>
+          <div className="text-[11px] font-semibold text-zinc-400">Akun Admin</div>
           <div className="text-xl font-black text-zinc-900 dark:text-zinc-100 mt-1">
-            {users.filter(u => u.tier?.includes('Platinum')).length} Member
+            {users.filter(u => u.role?.toLowerCase() === 'admin').length} Admin
           </div>
         </div>
         <div className="p-4 rounded-xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-sm">
@@ -131,7 +126,7 @@ export const UserManagement = () => {
 
       {/* Search & Filters */}
       <div className="p-5 rounded-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="relative">
             <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
@@ -150,23 +145,8 @@ export const UserManagement = () => {
               className="w-full px-3 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900 text-xs font-medium text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white"
             >
               <option value="all">Semua Peran (Role)</option>
-              <option value="customer">Customer (Pelanggan)</option>
-              <option value="admin">Administrator</option>
-              <option value="staff">Staff Gudang</option>
-            </select>
-          </div>
-
-          <div>
-            <select
-              value={tierFilter}
-              onChange={(e) => setTierFilter(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900 text-xs font-medium text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white"
-            >
-              <option value="all">Semua Tier Kolektor</option>
-              <option value="platinum">Platinum Collector</option>
-              <option value="gold">Gold Collector</option>
-              <option value="silver">Silver Collector</option>
-              <option value="bronze">Bronze Collector</option>
+              <option value="admin">Admin</option>
+              <option value="customer">Customer</option>
             </select>
           </div>
 
@@ -192,7 +172,6 @@ export const UserManagement = () => {
               <tr className="border-b border-zinc-200 dark:border-zinc-800 text-[11px] font-bold text-zinc-400 uppercase tracking-wider bg-zinc-50/50 dark:bg-zinc-900/50">
                 <th className="py-3 px-4">Pengguna & Kontak</th>
                 <th className="py-3 px-4">Role</th>
-                <th className="py-3 px-4">Tier Kolektor</th>
                 <th className="py-3 px-4">Total Belanja</th>
                 <th className="py-3 px-4">Pesanan</th>
                 <th className="py-3 px-4">Status</th>
@@ -202,7 +181,7 @@ export const UserManagement = () => {
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/70">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-zinc-400">
+                  <td colSpan={6} className="py-12 text-center text-zinc-400">
                     Tidak ada akun pengguna yang sesuai dengan filter.
                   </td>
                 </tr>
@@ -210,22 +189,12 @@ export const UserManagement = () => {
                 filteredUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-900/40 transition">
                     <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={u.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}
-                          alt={u.name}
-                          className="w-9 h-9 rounded-full object-cover border border-zinc-200 dark:border-zinc-700 shadow-sm flex-shrink-0"
-                        />
-                        <div className="min-w-0">
-                          <div className="font-bold text-zinc-950 dark:text-white text-sm flex items-center gap-1.5">
-                            <span>{u.name}</span>
-                            {u.tier?.includes('Platinum') && (
-                              <Crown className="w-3.5 h-3.5 text-zinc-900 dark:text-zinc-100 flex-shrink-0" />
-                            )}
-                          </div>
-                          <div className="text-[11px] text-zinc-400 mt-0.5">
-                            {u.email} • {u.phone || '-'}
-                          </div>
+                      <div className="min-w-0">
+                        <div className="font-bold text-zinc-950 dark:text-white text-sm">
+                          {u.name}
+                        </div>
+                        <div className="text-[11px] text-zinc-400 mt-0.5">
+                          {u.email} • {u.phone || '-'}
                         </div>
                       </div>
                     </td>
@@ -236,11 +205,6 @@ export const UserManagement = () => {
                         }`}
                       >
                         {u.role}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="font-bold text-zinc-800 dark:text-zinc-200">
-                        {u.tier || 'Collector'}
                       </span>
                     </td>
                     <td className="py-3 px-4 font-black text-zinc-950 dark:text-white text-sm">

@@ -6,13 +6,11 @@ import {
   Filter,
   CreditCard,
   Truck,
-  Plus,
   Eye,
   SlidersHorizontal
 } from 'lucide-react';
 import { formatIDR } from '../utils/formatters';
 import { OrderModal } from '../components/modals/OrderModal';
-import { CreateOrderModal } from '../components/modals/CreateOrderModal';
 
 export const OrderManagement = () => {
   const { orders } = useStore();
@@ -24,7 +22,6 @@ export const OrderManagement = () => {
   // Modals
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const filteredOrders = useMemo(() => {
     return orders.filter((o) => {
@@ -78,16 +75,6 @@ export const OrderManagement = () => {
           <p className="text-xs text-zinc-400 mt-1">
             Pantau status pesanan, verifikasi pembayaran, dan input resi pengiriman kurir
           </p>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 shadow-sm transition"
-          >
-            <Plus className="w-4 h-4" />
-            <span>+ Buat Pesanan Baru</span>
-          </button>
         </div>
       </div>
 
@@ -222,12 +209,6 @@ export const OrderManagement = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         order={selectedOrder}
-      />
-
-      {/* Create New Order Modal */}
-      <CreateOrderModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
       />
     </div>
   );

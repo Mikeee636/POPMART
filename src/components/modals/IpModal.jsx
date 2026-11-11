@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { X, Sparkles, Image as ImageIcon } from 'lucide-react';
 
-const DEFAULT_IP_AVATAR = 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=400&q=80';
-
 export const IpModal = ({ isOpen, onClose, initialData }) => {
   const { saveIP } = useStore();
   const fileInputRef = useRef(null);
@@ -14,7 +12,7 @@ export const IpModal = ({ isOpen, onClose, initialData }) => {
     artist: '',
     description: '',
     badgeColor: '#18181b',
-    avatar: DEFAULT_IP_AVATAR
+    avatar: ''
   });
 
   useEffect(() => {
@@ -25,7 +23,7 @@ export const IpModal = ({ isOpen, onClose, initialData }) => {
         artist: initialData.artist || '',
         description: initialData.description || '',
         badgeColor: initialData.badgeColor || '#18181b',
-        avatar: initialData.avatar || DEFAULT_IP_AVATAR
+        avatar: initialData.avatar || ''
       });
     } else {
       setFormData({
@@ -67,7 +65,7 @@ export const IpModal = ({ isOpen, onClose, initialData }) => {
 
     saveIP({
       ...formData,
-      avatar: formData.avatar || DEFAULT_IP_AVATAR
+      avatar: formData.avatar || ''
     });
     onClose();
   };

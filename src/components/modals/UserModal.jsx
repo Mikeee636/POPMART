@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
-import { X, UserPlus, Shield, User } from 'lucide-react';
+import { X, UserPlus } from 'lucide-react';
 
-const PRESET_AVATARS = [
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80',
-  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=200&q=80',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80'
-];
+const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80';
 
 export const UserModal = ({ isOpen, onClose, initialData }) => {
   const { saveUser } = useStore();
@@ -18,9 +12,8 @@ export const UserModal = ({ isOpen, onClose, initialData }) => {
     email: '',
     phone: '',
     role: 'customer',
-    tier: 'Bronze Collector',
     status: 'active',
-    avatar: PRESET_AVATARS[0],
+    avatar: DEFAULT_AVATAR,
     address: ''
   });
 
@@ -32,9 +25,8 @@ export const UserModal = ({ isOpen, onClose, initialData }) => {
         email: initialData.email || '',
         phone: initialData.phone || '',
         role: initialData.role || 'customer',
-        tier: initialData.tier || 'Bronze Collector',
         status: initialData.status || 'active',
-        avatar: initialData.avatar || PRESET_AVATARS[0],
+        avatar: initialData.avatar || DEFAULT_AVATAR,
         address: initialData.address || ''
       });
     } else {
@@ -43,9 +35,8 @@ export const UserModal = ({ isOpen, onClose, initialData }) => {
         email: '',
         phone: '',
         role: 'customer',
-        tier: 'Bronze Collector',
         status: 'active',
-        avatar: PRESET_AVATARS[0],
+        avatar: DEFAULT_AVATAR,
         address: ''
       });
     }
@@ -76,7 +67,7 @@ export const UserModal = ({ isOpen, onClose, initialData }) => {
               <h3 className="font-extrabold text-zinc-950 dark:text-white text-base">
                 {initialData ? 'Edit Data Pengguna' : 'Tambah Pengguna Baru'}
               </h3>
-              <p className="text-xs text-zinc-400">Kelola akses, role, dan tier kolektor</p>
+              <p className="text-xs text-zinc-400">Kelola akses dan role akun pengguna</p>
             </div>
           </div>
           <button
@@ -131,84 +122,18 @@ export const UserModal = ({ isOpen, onClose, initialData }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
-                Peran (Role)
-              </label>
-              <select
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white transition"
-              >
-                <option value="customer">Customer</option>
-                <option value="admin">Admin</option>
-                <option value="staff">Staff Gudang</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
-                Tier Kolektor
-              </label>
-              <select
-                value={formData.tier}
-                onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white transition"
-              >
-                <option value="Bronze Collector">Bronze Collector</option>
-                <option value="Silver Collector">Silver Collector</option>
-                <option value="Gold Collector">Gold Collector</option>
-                <option value="Platinum Collector">Platinum Collector</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
-                Status Akun
-              </label>
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white transition"
-              >
-                <option value="active">Aktif</option>
-                <option value="banned">Diblokir (Banned)</option>
-              </select>
-            </div>
-          </div>
-
           <div>
             <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
-              Pilih Avatar
+              Peran (Role)
             </label>
-            <div className="flex items-center gap-2">
-              {PRESET_AVATARS.map((av, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setFormData({ ...formData, avatar: av })}
-                  className={`relative rounded-full overflow-hidden border-2 transition ${
-                    formData.avatar === av ? 'border-zinc-900 dark:border-white scale-105 shadow-sm' : 'border-transparent opacity-60 hover:opacity-100'
-                  }`}
-                >
-                  <img src={av} alt="Avatar" className="w-9 h-9 object-cover" />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
-              Alamat Pengiriman Default
-            </label>
-            <textarea
-              rows={2}
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              placeholder="Jalan, No. Rumah, Kecamatan, Kota, Kode Pos"
-              className="w-full px-4 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white transition resize-none"
-            />
+            <select
+              value={formData.role}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900 dark:focus:ring-white transition"
+            >
+              <option value="customer">Customer</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
 
           <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-end gap-3">

@@ -19,7 +19,7 @@ export const UserDetailModal = ({ isOpen, onClose, user }) => {
         <div className="relative h-28 bg-zinc-950 p-6 flex items-start justify-between border-b border-zinc-800">
           <div className="text-white">
             <span className="text-[10px] font-extrabold uppercase tracking-widest bg-zinc-900 border border-zinc-700 px-2.5 py-1 rounded-full">
-              Profil Kolektor Pop Mart
+              Profil Pengguna Pop Mart
             </span>
           </div>
           <button
@@ -32,14 +32,9 @@ export const UserDetailModal = ({ isOpen, onClose, user }) => {
 
         {/* Profile Info Summary */}
         <div className="px-6 pb-6 pt-0 relative">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 mb-6">
-            <div className="flex items-end gap-4">
-              <img
-                src={user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'}
-                alt={user.name}
-                className="w-20 h-20 rounded-2xl object-cover border-4 border-white dark:border-zinc-900 shadow-md"
-              />
-              <div className="mb-1">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mt-4 mb-6">
+            <div className="flex items-center gap-4">
+              <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-extrabold text-base text-zinc-900 dark:text-white leading-tight">
                     {user.name}
@@ -59,9 +54,9 @@ export const UserDetailModal = ({ isOpen, onClose, user }) => {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5">
-                <Award className="w-3.5 h-3.5 text-zinc-900 dark:text-white" />
-                {user.tier || 'Collector'}
+              <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-200 dark:border-zinc-700 flex items-center gap-1.5 uppercase">
+                <ShieldCheck className="w-3.5 h-3.5 text-zinc-900 dark:text-white" />
+                Role: {user.role || 'Customer'}
               </span>
             </div>
           </div>
